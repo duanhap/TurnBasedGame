@@ -28,14 +28,7 @@ TurnBasedGame/
 
 ---
 
-## 🌿 Quy trình Git & Đặt tên Nhánh (Git Workflow)
-- **Nhánh chính**: `main` (mọi code hoàn thiện phải được PR và Merge vào `main`).
-- **Đặt tên nhánh tính năng**: `feature/T-<Task_ID>-<tên-task>`
-  - Ví dụ: `feature/T-02-character-class`, `feature/T-05-character-roster`
-- **Quy tắc Commit Message**: `[T-<Task_ID>] <Mô tả ngắn gọn>`
-  - Ví dụ: `[T-01] Create project skeleton and build scripts`
 
----
 
 ## 🛠️ Hướng dẫn Biên dịch và Chạy
 
@@ -50,8 +43,3 @@ make
 2. Bấm `Ctrl + F5` để Build và Run dự án.
 
 ---
-
-## 👥 Phân công Task Thành viên
-- **Nguyễn Công Duẩn**: Task 0 (Setup repo, skeleton, workflow), Task 1-4 (Domain Models), Task 10-11 (BattleEngine).
-- **Nguyễn Đình Dũng**: Task 5-6 (CharacterRoster & Persistence), Task 12 (DataFileManager), Task 15, 17, 19.
-- **Đỗ Duệ Minh**: Task 7-9 (Team & TeamManager), Task 13-14 (Console UI & Menu), Task 18, 20.
