@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="TurnBasedGame.vcxproj" />
+  <Project Path="TurnBasedGame.vcxproj" Id="238af911-0588-4314-beda-56b216d30402" />
 </Solution>

@@ -1,9 +1,28 @@
-#include <iostream>
+//#include "CharacterRoster.h"
+//#include "TeamManager.h"
+//#include "BattleEngine.h"
+//#include "DataFileManager.h"
+#include "Menu.h"
 
 int main() {
-    std::cout << "========================================" << std::endl;
-    std::cout << "    TURN-BASED ADVENTURE GAME (C++11)   " << std::endl;
-    std::cout << "========================================" << std::endl;
-    std::cout << "Project skeleton initialized successfully." << std::endl;
+    // 1. Khởi tạo data layer
+    //DataFileManager dataManager("data/characters.txt", "data/teams.txt");
+
+    // 2. Khởi tạo domain objects
+    //CharacterRoster roster;
+    //TeamManager     teamManager;
+
+    // 3. Load dữ liệu từ file
+    //dataManager.loadCharacters(roster);
+    //dataManager.loadTeams(teamManager);
+
+    // 4. Khởi tạo engine
+    //BattleEngine engine(roster, teamManager);
+
+    // 5. Khởi tạo và chạy app — main() không biết gì thêm
+    //Menu menu(roster, teamManager, engine, dataManager);
+    Menu menu;
+    menu.run();
+
     return 0;
 }
