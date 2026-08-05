@@ -1,13 +1,13 @@
-#include "pch.h"
+#include "../pch.h"
 #include "BattleEngine.h"
 #include <iostream>
 #include <string>
 
 
-//BattleEngine::BattleEngine()
-//    : m_roster(nullptr)
-//{
-//}
+BattleEngine::BattleEngine()
+    : m_roster(nullptr)
+{
+}
 
 //bool BattleEngine::selectTeams(const Team* teamA,
 //    const Team* teamB,

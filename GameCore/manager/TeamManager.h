@@ -1,5 +1,5 @@
 #pragma once
-#include "Team.h"
+#include "../model/Team.h"
 #include "CharacterRoster.h"
 #include <vector>
 #include <string>

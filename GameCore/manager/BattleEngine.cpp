@@ -1,38 +1,38 @@
-#include "pch.h"
+#include "../pch.h"
 #include "BattleEngine.h"
 #include <iostream>
 #include <string>
 
-//BattleEngine::BattleEngine()
-//    : m_roster(nullptr)
-//{}
+ BattleEngine::BattleEngine()
+    : m_roster(nullptr)
+ {}
 
-//bool BattleEngine::selectTeams(const Team* teamA,
-//    const Team* teamB,
-//    const CharacterRoster& roster) {
-//    bool ok = m_battle.setup(teamA, teamB, roster);
-//    if (ok) {
-//        m_roster = &roster;
-//    }
-//    return ok;
-//}
+bool BattleEngine::selectTeams(const Team* teamA,
+    const Team* teamB,
+    const CharacterRoster& roster) {
+    bool ok = m_battle.setup(teamA, teamB, roster);
+    if (ok) {
+        m_roster = &roster;
+    }
+    return ok;
+}
 
-//bool BattleEngine::startBattle() {
-//    if (!m_battle.isSetup()) return false;
-//    if (m_battle.getState() == BattleState::IN_PROGRESS ||
-//        m_battle.getState() == BattleState::FINISHED)
-//        return false;
-//    m_battle.resetCombatants(*m_roster);
-//    m_battle.setCurrentSide(0);
-//    m_battle.setCurrentIndex(0);
-//    m_battle.setState(BattleState::IN_PROGRESS);
-//    m_battle.incrementTurn();
-//    int side = 0, index = 0;
-//    if (!m_battle.getSlot(side, index).isAlive()) {
-//        advanceToNextActor();
-//    }
-//    return true;
-//}
+bool BattleEngine::startBattle() {
+    if (!m_battle.isSetup()) return false;
+    if (m_battle.getState() == BattleState::IN_PROGRESS ||
+        m_battle.getState() == BattleState::FINISHED)
+        return false;
+    m_battle.resetCombatants(*m_roster);
+    m_battle.setCurrentSide(0);
+    m_battle.setCurrentIndex(0);
+    m_battle.setState(BattleState::IN_PROGRESS);
+    m_battle.incrementTurn();
+    int side = 0, index = 0;
+    if (!m_battle.getSlot(side, index).isAlive()) {
+        advanceToNextActor();
+    }
+    return true;
+}
 
 bool BattleEngine::performCurrentAction(int targetCharacterId) {
     if (m_battle.getState() != BattleState::IN_PROGRESS)

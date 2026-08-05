@@ -3,16 +3,16 @@
 #define BATTLEENGINE_H
 
 #include "../model/Battle.h"
-//#include "CharacterRoster.h"
-//#include "../model/Team.h"
+#include "CharacterRoster.h"
+#include "../model/Team.h"
 
 class BattleEngine {
 public:
     BattleEngine();
 
-    //bool selectTeams(const Team* teamA,
-    //    const Team* teamB,
-    //    const CharacterRoster& roster);
+    bool selectTeams(const Team* teamA,
+        const Team* teamB,
+        const CharacterRoster& roster);
 
     bool startBattle();
 
@@ -29,10 +29,10 @@ public:
 
 private:
     Battle           m_battle;
-    //const CharacterRoster* m_roster;
+    const CharacterRoster* m_roster;
 
     bool findSlot(int characterId, int& outSide, int& outIndex) const;
-    bool getCurrentActorSlot(int& outSide, int& outIndex) const;
+    //bool getCurrentActorSlot(int& outSide, int& outIndex) const;
     void advanceToNextActor();
     bool isValidTarget(int targetId, int actorSide) const;
 };

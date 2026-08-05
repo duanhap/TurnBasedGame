@@ -4,16 +4,16 @@
 #include <string>
 
 
-//Menu::Menu(CharacterRoster& roster,
-//    TeamManager& teamManager,
-//    BattleEngine& battleEngine,
-//    DataFileManager& fileManager)
-//    : m_roster(roster)
-//    , m_teamManager(teamManager)
-//    , m_battleEngine(battleEngine)
-//    , m_fileManager(fileManager)
-//{
-//}
+Menu::Menu(CharacterRoster& roster,
+   TeamManager& teamManager,
+   BattleEngine& battleEngine,
+   DataFileManager& fileManager)
+   : m_roster(roster)
+   , m_teamManager(teamManager)
+   , m_battleEngine(battleEngine)
+   , m_fileManager(fileManager)
+{
+}
 
 
 void Menu::run() {

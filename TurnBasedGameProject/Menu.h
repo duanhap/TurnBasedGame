@@ -2,26 +2,25 @@
 #ifndef MENU_H
 #define MENU_H
 
-//#include "CharacterRoster.h"
+#include "CharacterRoster.h"
 #include "TeamManager.h"
 #include "BattleEngine.h"
-//#include "DataFileManager.h"
+#include "DataFileManager.h"
 
 class Menu {
 public:
-    
-    //Menu(CharacterRoster& roster,
-    //    TeamManager& teamManager,
-    //    BattleEngine& battleEngine,
-    //    DataFileManager& fileManager);
+    Menu(CharacterRoster& roster,
+        TeamManager& teamManager,
+        BattleEngine& battleEngine,
+        DataFileManager& fileManager);
 
     void run();
 
 private:
-    //CharacterRoster& m_roster;
-    //TeamManager& m_teamManager;
-    //BattleEngine& m_battleEngine;
-    //DataFileManager& m_fileManager;
+    CharacterRoster& m_roster;
+    TeamManager& m_teamManager;
+    BattleEngine& m_battleEngine;
+    DataFileManager& m_fileManager;
 
     // ---------------------------------------------------------------
     // Menu cấp 1

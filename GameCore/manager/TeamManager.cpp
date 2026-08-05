@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "TeamManager.h"
 #include <algorithm>
 #include <iostream>
@@ -168,7 +168,7 @@ void TeamManager::displayAllTeams(const CharacterRoster& roster) const
             cout << "  " << (i + 1) << ". ID=" << charId;
             if (ch != nullptr) {
                 cout << " | " << ch->getName()
-                     << " [" << ch->getType() << "]"
+                 //    << " [" << ch->getType() << "]"
                      << " HP=" << ch->getMaxHp();
             } else {
                 cout << " (khong tim thay trong Roster)";

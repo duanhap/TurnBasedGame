@@ -1,9 +1,9 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
-//#include "Character.h"
-//#include "Team.h"
-//#include "CharacterRoster.h"
+#include "Character.h"
+#include "Team.h"
+#include "../manager/CharacterRoster.h"
 #include <string>
 
 enum class BattleState {
@@ -30,10 +30,10 @@ public:
     Battle();
 
     // Gán hai Team và khởi tạo mảng slot; trả false nếu không hợp lệ
-    //bool setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster);
+    bool setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster);
 
     // Reset currentHp / currentMana về maxHp / maxMana (gọi khi Start)
-    //void resetCombatants(const CharacterRoster& roster);
+    void resetCombatants(const CharacterRoster& roster);
 
     
     BattleState getState() const;

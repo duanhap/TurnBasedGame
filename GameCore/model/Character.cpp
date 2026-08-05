@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "Character.h"
 
 Character::Character(int id, std::string name, unsigned int maxHp, std::string type)
