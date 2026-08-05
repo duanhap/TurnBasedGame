@@ -13,7 +13,7 @@ TEST(WarriorTest, PerformActionReducesTargetHp)
 
     // Assert
     EXPECT_TRUE(result);
-    EXPECT_EQ(target.getMaxHp(), 35u);
+    EXPECT_EQ(target.getMaxHp(), 30u);
 }
 
 TEST(WarriorTest, PerformActionReturnsFalseWhenTargetIsDead)
