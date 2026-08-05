@@ -21,9 +21,21 @@
     <ClCompile Include="src\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Battle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\BattleEngine.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BattleEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Battle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

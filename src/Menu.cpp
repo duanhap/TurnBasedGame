@@ -343,12 +343,8 @@ void Menu::doAddCharacterToTeam() {
     charId = readInt("", 1, std::numeric_limits<int>::max());
 
     // Kiểm tra Character tồn tại trong Roster trước khi chuyển cho TeamManager
-    //if (m_roster.findById(charId) == nullptr) {
-    //    std::cout << "[LOI] Character ID=" << charId << " khong ton tai trong Roster.\n";
-    //    return;
-    //}
+    //bool ok = m_teamManager.addCharacterToTeam(teamId, charId, m_roster);
 
-    //bool ok = m_teamManager.addCharacterToTeam(teamId, charId);
     //if (ok) {
     //    std::cout << "[OK] Da them Character ID=" << charId << " vao Team ID=" << teamId << "\n";
     //}
@@ -407,7 +403,8 @@ void Menu::handleBattleMenu() {
 void Menu::doSelectTeams() {
     std::cout << "\n-- Chon hai Team tham chien --\n";
     std::cout << "Danh sach Team hien co:\n";
-    //m_teamManager.displayAll(m_roster);
+    //m_teamManager.displayAllTeams(m_roster);
+
 
     int idA, idB;
     std::cout << "Nhap Team ID (doi A): ";

@@ -143,10 +143,14 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\BattleEngine.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Battle.cpp" />
+    <ClCompile Include="src\BattleEngine.cpp" />
     <ClCompile Include="src\Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Battle.h" />
     <ClInclude Include="include\Menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
