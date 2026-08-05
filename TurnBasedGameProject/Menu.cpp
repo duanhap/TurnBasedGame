@@ -274,7 +274,7 @@ void Menu::handleTeamMenu() {
 }
 
 void Menu::doListTeams() const {
-    //m_teamManager.displayAll(m_roster);
+    m_teamManager.displayAllTeams(m_roster);
 }
 
 void Menu::doCreateTeam() {
@@ -286,13 +286,13 @@ void Menu::doCreateTeam() {
     std::string teamName;
     readNonEmptyString("Nhap ten Team: ", teamName);
 
-    //bool ok = m_teamManager.createTeam(teamId, teamName);
-    //if (ok) {
-    //    std::cout << "[OK] Da tao Team \"" << teamName << "\" (ID=" << teamId << ")\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong the tao Team (ID trung hoac ten rong/trung).\n";
-    //}
+    bool ok = m_teamManager.createTeam(teamId, teamName);
+    if (ok) {
+       std::cout << "[OK] Da tao Team \"" << teamName << "\" (ID=" << teamId << ")\n";
+    }
+    else {
+       std::cout << "[LOI] Khong the tao Team (ID trung hoac ten rong/trung).\n";
+    }
 }
 
 void Menu::doRenameTeam() {
@@ -304,13 +304,13 @@ void Menu::doRenameTeam() {
     std::string newName;
     readNonEmptyString("Ten moi: ", newName);
 
-    //bool ok = m_teamManager.renameTeam(teamId, newName);
-    //if (ok) {
-    //    std::cout << "[OK] Da doi ten Team ID=" << teamId << " thanh \"" << newName << "\"\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong tim thay Team hoac ten moi bi trung.\n";
-    //}
+    bool ok = m_teamManager.renameTeam(teamId, newName);
+    if (ok) {
+       std::cout << "[OK] Da doi ten Team ID=" << teamId << " thanh \"" << newName << "\"\n";
+    }
+    else {
+       std::cout << "[LOI] Khong tim thay Team hoac ten moi bi trung.\n";
+    }
 }
 
 void Menu::doDeleteTeam() {
@@ -319,13 +319,13 @@ void Menu::doDeleteTeam() {
     std::cout << "Nhap Team ID: ";
     teamId = readInt("", 1, std::numeric_limits<int>::max());
 
-    //bool ok = m_teamManager.deleteTeam(teamId);
-    //if (ok) {
-    //    std::cout << "[OK] Da xoa Team ID=" << teamId << "\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong tim thay Team ID=" << teamId << "\n";
-    //}
+    bool ok = m_teamManager.deleteTeam(teamId);
+    if (ok) {
+       std::cout << "[OK] Da xoa Team ID=" << teamId << "\n";
+    }
+    else {
+       std::cout << "[LOI] Khong tim thay Team ID=" << teamId << "\n";
+    }
 }
 
 void Menu::doAddCharacterToTeam() {
@@ -338,15 +338,14 @@ void Menu::doAddCharacterToTeam() {
     std::cout << "Nhap Character ID: ";
     charId = readInt("", 1, std::numeric_limits<int>::max());
 
-    // Kiểm tra Character tồn tại trong Roster trước khi chuyển cho TeamManager
-    //bool ok = m_teamManager.addCharacterToTeam(teamId, charId, m_roster);
+    bool ok = m_teamManager.addCharacterToTeam(teamId, charId, m_roster);
 
-    //if (ok) {
-    //    std::cout << "[OK] Da them Character ID=" << charId << " vao Team ID=" << teamId << "\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong the them (Team day, ID trung, hoac Team khong ton tai).\n";
-    //}
+    if (ok) {
+       std::cout << "[OK] Da them Character ID=" << charId << " vao Team ID=" << teamId << "\n";
+    }
+    else {
+       std::cout << "[LOI] Khong the them (Team day, ID trung, hoac Team khong ton tai).\n";
+    }
 }
 
 void Menu::doRemoveCharacterFromTeam() {
@@ -359,13 +358,13 @@ void Menu::doRemoveCharacterFromTeam() {
     std::cout << "Nhap Character ID: ";
     charId = readInt("", 1, std::numeric_limits<int>::max());
 
-    //bool ok = m_teamManager.removeCharacterFromTeam(teamId, charId);
-    //if (ok) {
-    //    std::cout << "[OK] Da xoa Character ID=" << charId << " khoi Team ID=" << teamId << "\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong tim thay Character hoac Team tuong ung.\n";
-    //}
+    bool ok = m_teamManager.removeCharacterFromTeam(teamId, charId);
+    if (ok) {
+       std::cout << "[OK] Da xoa Character ID=" << charId << " khoi Team ID=" << teamId << "\n";
+    }
+    else {
+       std::cout << "[LOI] Khong tim thay Character hoac Team tuong ung.\n";
+    }
 }
 
 // ============================================================
@@ -399,7 +398,7 @@ void Menu::handleBattleMenu() {
 void Menu::doSelectTeams() {
     std::cout << "\n-- Chon hai Team tham chien --\n";
     std::cout << "Danh sach Team hien co:\n";
-    //m_teamManager.displayAllTeams(m_roster);
+    m_teamManager.displayAllTeams(m_roster);
 
 
     int idA, idB;
@@ -409,27 +408,27 @@ void Menu::doSelectTeams() {
     idB = readInt("", 1, std::numeric_limits<int>::max());
 
     // Lấy pointer tới Team từ TeamManager
-    //const Team* teamA = m_teamManager.findById(idA);
-    //const Team* teamB = m_teamManager.findById(idB);
+    const Team* teamA = m_teamManager.getTeam(idA);
+    const Team* teamB = m_teamManager.getTeam(idB);
 
-    //if (teamA == nullptr) {
-    //    std::cout << "[LOI] Khong tim thay Team ID=" << idA << "\n";
-    //    return;
-    //}
-    //if (teamB == nullptr) {
-    //    std::cout << "[LOI] Khong tim thay Team ID=" << idB << "\n";
-    //    return;
-    //}
+    if (teamA == nullptr) {
+       std::cout << "[LOI] Khong tim thay Team ID=" << idA << "\n";
+       return;
+    }
+    if (teamB == nullptr) {
+       std::cout << "[LOI] Khong tim thay Team ID=" << idB << "\n";
+       return;
+    }
 
-    //// Validation: hai Team khác nhau, không rỗng (FR-03 / TC-06)
-    //bool ok = m_battleEngine.selectTeams(teamA, teamB, m_roster);
-    //if (ok) {
-    //    std::cout << "[OK] Da chon doi A: \"" << teamA->getName()
-    //        << "\" vs doi B: \"" << teamB->getName() << "\"\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong the chon (Team rong, cung mot Team, hoac nhan vat trung nhau).\n";
-    //}
+    // Validation: hai Team khác nhau, không rỗng (FR-03 / TC-06)
+    bool ok = m_battleEngine.selectTeams(teamA, teamB, m_roster);
+    if (ok) {
+       std::cout << "[OK] Da chon doi A: \"" << teamA->getName()
+           << "\" vs doi B: \"" << teamB->getName() << "\"\n";
+    }
+    else {
+       std::cout << "[LOI] Khong the chon (Team rong, cung mot Team, hoac nhan vat trung nhau).\n";
+    }
 }
 
 void Menu::doStartBattle() {

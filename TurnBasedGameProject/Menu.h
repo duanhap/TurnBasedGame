@@ -3,8 +3,8 @@
 #define MENU_H
 
 //#include "CharacterRoster.h"
-//#include "TeamManager.h"
-//#include "BattleEngine.h"
+#include "TeamManager.h"
+#include "BattleEngine.h"
 //#include "DataFileManager.h"
 
 class Menu {
