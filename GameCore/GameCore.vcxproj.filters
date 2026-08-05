@@ -24,16 +24,10 @@
     <ClInclude Include="model\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="model\DataFileManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="model\Mage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="model\Team.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="model\TeamManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="model\Warrior.h">
@@ -59,16 +53,10 @@
     <ClCompile Include="model\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="model\DataFileManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="model\Mage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model\Team.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="model\TeamManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model\Warrior.cpp">
