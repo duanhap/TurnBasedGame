@@ -22,3 +22,12 @@ bool Warrior::performAction(Character& target)
 		return false;
 	}
 }
+void Warrior::display() const
+{
+    Character::display();
+
+    std::cout
+        << "Attack Power = "
+        << attackPower
+        << std::endl;
+}

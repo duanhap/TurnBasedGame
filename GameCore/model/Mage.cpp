@@ -31,3 +31,14 @@ bool Mage::performAction(Character& target)
 		return false;
 	}
 }
+void Mage::display() const
+{
+    Character::display();
+
+    std::cout
+        << "Mana = " << maxMana
+        << " | Spell Damage = " << spellDamage
+        << " | Mana Cost = " << manaCost
+        << " | Fallback Damage = " << fallbackDamage
+        << std::endl;
+}

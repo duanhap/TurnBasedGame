@@ -1,8 +1,11 @@
 #include "Menu.h"
 #include "DataFileManager.h"
+#include "Warrior.h"
+#include "Mage.h"
 #include <iostream>
 #include <limits>
 #include <string>
+#include <memory>
 
 
 Menu::Menu(CharacterRoster& roster,
@@ -87,7 +90,7 @@ void Menu::handleRosterMenu() {
 }
 
 void Menu::doListCharacters() const {
-    //m_roster.displayAll();
+    m_roster.displayAll();
 }
 
 void Menu::doAddCharacter() {
@@ -108,21 +111,18 @@ void Menu::doAddCharacter() {
     maxHp = readInt("", 1, std::numeric_limits<int>::max());
 
     if (typeChoice == 1) {
-        // Warrior
         int attackPower;
         std::cout << "Nhap attackPower (> 0): ";
         attackPower = readInt("", 1, std::numeric_limits<int>::max());
 
-        //bool ok = m_roster.addWarrior(id, name, maxHp, attackPower);
-        //if (ok) {
-        //    std::cout << "[OK] Da them Warrior: " << name << "\n";
-        //}
-        //else {
-        //    std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
-        //}
-    }
-    else {
-        // Mage
+        auto warrior = std::make_unique<Warrior>(id, name, (unsigned int)maxHp, "WARRIOR", attackPower);
+        int result = m_roster.add(std::move(warrior));
+        if (result != -1) {
+            std::cout << "[OK] Da them Warrior: " << name << " (ID=" << result << ")\n";
+        } else {
+            std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
+        }
+    } else {
         int maxMana, spellDamage, manaCost, fallbackDamage;
         std::cout << "Nhap maxMana (> 0): ";
         maxMana = readInt("", 1, std::numeric_limits<int>::max());
@@ -133,13 +133,15 @@ void Menu::doAddCharacter() {
         std::cout << "Nhap fallbackDamage (> 0): ";
         fallbackDamage = readInt("", 1, std::numeric_limits<int>::max());
 
-        //bool ok = m_roster.addMage(id, name, maxHp, maxMana, spellDamage, manaCost, fallbackDamage);
-        //if (ok) {
-        //    std::cout << "[OK] Da them Mage: " << name << "\n";
-        //}
-        //else {
-        //    std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
-        //}
+        auto mage = std::make_unique<Mage>(id, name, (unsigned int)maxHp, "MAGE",
+            (unsigned int)maxMana, (unsigned int)spellDamage,
+            (unsigned int)manaCost, (unsigned int)fallbackDamage);
+        int result = m_roster.add(std::move(mage));
+        if (result != -1) {
+            std::cout << "[OK] Da them Mage: " << name << " (ID=" << result << ")\n";
+        } else {
+            std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
+        }
     }
 }
 
@@ -149,13 +151,13 @@ void Menu::doEditCharacter() {
     std::cout << "Nhap ID nhan vat can sua: ";
     id = readInt("", 1, std::numeric_limits<int>::max());
 
-    // Kiểm tra tồn tại — roster trả về pointer hoặc nullptr
-    //const Character* ch = m_roster.findById(id);
-    //if (ch == nullptr) {
-    //    std::cout << "[LOI] Khong tim thay nhan vat co ID = " << id << "\n";
-    //    return;
-    //}
-    //ch->display();
+     //Kiểm tra tồn tại — roster trả về pointer hoặc nullptr
+    const Character* ch = m_roster.findById(id);
+    if (ch == nullptr) {
+        std::cout << "[LOI] Khong tim thay nhan vat co ID = " << id << "\n";
+        return;
+    }
+    ch->display();
 
     std::string newName;
     readNonEmptyString("Ten moi (giu nguyen nhap lai ten cu): ", newName);
@@ -199,16 +201,15 @@ void Menu::doDeleteCharacter() {
     std::cout << "Nhap ID nhan vat can xoa: ";
     id = readInt("", 1, std::numeric_limits<int>::max());
 
-    // Xóa khỏi tất cả Team trước (FR-01: khi xóa phải loại khỏi mọi Team)
-    // m_teamManager.removeCharacterFromAllTeams(id);
+    m_teamManager.removeCharacterFromAllTeams(id);
 
-    //bool ok = m_roster.removeById(id);
-    //if (ok) {
-    //    std::cout << "[OK] Da xoa nhan vat ID = " << id << " va loai khoi moi Team.\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong tim thay nhan vat co ID = " << id << "\n";
-    //}
+    bool ok = m_roster.remove(id);
+    if (ok) {
+        std::cout << "[OK] Da xoa nhan vat ID = " << id << " va loai khoi moi Team.\n";
+    }
+    else {
+        std::cout << "[LOI] Khong tim thay nhan vat co ID = " << id << "\n";
+    }
 }
 
 void Menu::doFindCharacter() const {
@@ -221,13 +222,13 @@ void Menu::doFindCharacter() const {
         int id;
         std::cout << "Nhap ID: ";
         id = readInt("", 1, std::numeric_limits<int>::max());
-        //const Character* ch = m_roster.findById(id);
-        //if (ch != nullptr) {
-        //    ch->display();
-        //}
-        //else {
-        //    std::cout << "[THONG BAO] Khong tim thay nhan vat co ID = " << id << "\n";
-        //}
+        const Character* ch = m_roster.findById(id);
+        if (ch != nullptr) {
+            ch->display();
+        }
+        else {
+            std::cout << "[THONG BAO] Khong tim thay nhan vat co ID = " << id << "\n";
+        }
     }
     else {
         std::string keyword;

@@ -88,3 +88,20 @@ bool CharacterRoster::hasCharacter(int charId) const
 {
     return findById(charId) != nullptr;
 }
+
+void CharacterRoster::displayAll() const
+{
+    if (characters.empty()) {
+        std::cout << "(Chua co nhan vat nao)" << std::endl;
+        return;
+    }
+
+    std::cout << "\n===== DANH SACH NHAN VAT =====" << std::endl;
+    int stt = 0;
+    for (const auto& c : characters) {
+		std::cout << "{STT " << (++stt) <<"} : ";
+        c->display();   // Gọi đa hình
+    }
+
+    std::cout << "==============================" << std::endl;
+}
