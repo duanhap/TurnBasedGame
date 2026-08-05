@@ -7,8 +7,8 @@ private:
 	unsigned int attackPower;
 
 public:
-	Warrior();
+	Warrior() = default;
 	Warrior(int, std::string, unsigned int, std::string, int);
-	~Warrior();
+	~Warrior() = default;
 	bool performAction(Character& target) override;
 };

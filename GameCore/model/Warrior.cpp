@@ -1,8 +1,9 @@
+#include "pch.h"
+#include <iostream>
 #include "Warrior.h"
 
-
 Warrior::Warrior(int id, std::string name, unsigned int maxHp, std::string type, int attackDamage)
-	: Character(id, name, maxHp, type), attackDamage(attackDamage)
+	: Character(id, name, maxHp, type), attackPower(attackDamage)
 {
 
 }
@@ -11,8 +12,8 @@ bool Warrior::performAction(Character& target)
 {
 	if (target.isAlive()) 
 	{
-		target.reduceHp(attackDamage);
-		std::cout << "Warrior " << name << " vua danh " << target.getName() << " giam " << attackDamage << " HP." << std::endl;
+		target.reduceHp(attackPower);
+		std::cout << "Warrior " << name << " vua danh " << target.getName() << " giam " << attackPower << " HP." << std::endl;
 		return true;
 	}
 	else
