@@ -5,22 +5,19 @@
 #include "Menu.h"
 
 int main() {
-    // 1. Khởi tạo data layer
-    DataFileManager dataManager;
-
-    // 2. Khởi tạo domain objects
+    // 1. Khởi tạo domain objects
     CharacterRoster roster;
     TeamManager     teamManager;
 
-    // 3. Load dữ liệu từ file
-    //dataManager.loadCharacters(roster);
-    //dataManager.loadTeams(teamManager);
+    // 2. Load dữ liệu từ file (DataFileManager dùng static methods)
+    DataFileManager::loadCharacters("data/characters.txt", roster);
+    DataFileManager::loadTeams("data/teams.txt", teamManager, roster);
 
-    // 4. Khởi tạo engine
+    // 3. Khởi tạo engine
     BattleEngine engine;
 
-    // 5. Khởi tạo và chạy app — main() không biết gì thêm
-    Menu menu(roster, teamManager, engine, dataManager);
+    // 4. Khởi tạo và chạy app
+    Menu menu(roster, teamManager, engine);
     menu.run();
 
     return 0;

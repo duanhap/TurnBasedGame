@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "DataFileManager.h"
 #include <iostream>
 #include <limits>
 #include <string>
@@ -6,12 +7,10 @@
 
 Menu::Menu(CharacterRoster& roster,
    TeamManager& teamManager,
-   BattleEngine& battleEngine,
-   DataFileManager& fileManager)
+   BattleEngine& battleEngine)
    : m_roster(roster)
    , m_teamManager(teamManager)
    , m_battleEngine(battleEngine)
-   , m_fileManager(fileManager)
 {
 }
 
@@ -49,13 +48,12 @@ void Menu::showMainMenu() const {
 
 void Menu::handleSaveExit() {
     std::cout << "\n[*] Dang luu du lieu...\n";
-    //bool ok = m_fileManager.saveAll(m_roster, m_teamManager);
-    //if (ok) {
-    //    std::cout << "[OK] Da luu. Tam biet!\n";
-    //}
-    //else {
-    //    std::cout << "[LOI] Khong the luu file. Kiem tra quyen truy cap.\n";
-    //}
+    bool ok = DataFileManager::saveTeams("data/teams.txt", m_teamManager);
+    if (ok) {
+        std::cout << "[OK] Da luu. Tam biet!\n";
+    } else {
+        std::cout << "[LOI] Khong the luu file. Kiem tra quyen truy cap.\n";
+    }
 }
 
 // ============================================================
