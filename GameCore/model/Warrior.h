@@ -10,5 +10,6 @@ public:
 	Warrior() = default;
 	Warrior(int, std::string, unsigned int, std::string, int);
 	~Warrior() = default;
+	unsigned int getAttackPower() const { return attackPower; }
 	bool performAction(Character& target) override;
 };

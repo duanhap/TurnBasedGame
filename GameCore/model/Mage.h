@@ -11,4 +11,7 @@ public:
 	~Mage() = default;
 	bool performAction(Character& target) override;
 	unsigned int getMaxMana() const { return maxMana; }
+	unsigned int getSpellDamage() const { return spellDamage; }
+	unsigned int getManaCost() const { return manaCost; }
+	unsigned int getFallbackDamage() const { return fallbackDamage; }
 };
