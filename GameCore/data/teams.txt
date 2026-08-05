@@ -1,0 +1,4 @@
+# Định dạng dữ liệu Đội hình (teams.txt)
+# teamId|teamName|characterId1,characterId2,...
+201|Red Team|101
+202|Blue Team|102
