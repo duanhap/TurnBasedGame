@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="model\Battle.h" />
+    <ClInclude Include="model\BattleEngine.h" />
     <ClInclude Include="model\Character.h" />
     <ClInclude Include="model\Mage.h" />
     <ClInclude Include="model\Warrior.h" />
@@ -151,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameCore.cpp" />
+    <ClCompile Include="model\Battle.cpp" />
+    <ClCompile Include="model\BattleEngine.cpp" />
     <ClCompile Include="model\Character.cpp" />
     <ClCompile Include="model\Mage.cpp" />
     <ClCompile Include="model\Warrior.cpp" />

@@ -2,12 +2,6 @@
 #ifndef MENU_H
 #define MENU_H
 
-// Menu.h — T-13: Giao diện console và điều phối use case
-// Trách nhiệm: Nhận input từ người dùng, hiển thị output và gọi
-//              đúng method trên các module (CharacterRoster, TeamManager,
-//              BattleEngine, DataFileManager).
-// KHÔNG chứa business logic — mọi validation nghiệp vụ nằm ở module tương ứng.
-
 //#include "CharacterRoster.h"
 //#include "TeamManager.h"
 //#include "BattleEngine.h"
@@ -15,17 +9,15 @@
 
 class Menu {
 public:
-    // Khởi tạo với các dependency được inject từ main()
+    
     //Menu(CharacterRoster& roster,
     //    TeamManager& teamManager,
     //    BattleEngine& battleEngine,
     //    DataFileManager& fileManager);
 
-    // Vòng lặp chính — chạy đến khi người dùng chọn Exit
     void run();
 
 private:
-    // --- Dependencies (không sở hữu — lifetime do main() quản lý) ---
     //CharacterRoster& m_roster;
     //TeamManager& m_teamManager;
     //BattleEngine& m_battleEngine;

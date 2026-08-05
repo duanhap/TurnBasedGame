@@ -7,12 +7,12 @@
 #include <string>
 
 // ----------------------------------------------------------------
-// Enum trạng thái trận đấu  (FR-03)
+// Enum trạng thái trận đấu  
 // ----------------------------------------------------------------
 enum class BattleState {
-    READY,       // Đã chọn Team, chưa bắt đầu
-    IN_PROGRESS, // Đang diễn ra
-    FINISHED     // Đã kết thúc
+    READY,       
+    IN_PROGRESS, 
+    FINISHED     
 };
 
 // ----------------------------------------------------------------
@@ -20,9 +20,9 @@ enum class BattleState {
 // Tách khỏi Character để không làm bẩn dữ liệu gốc (roster).
 // ----------------------------------------------------------------
 struct CombatantSlot {
-    int  characterId;   // tham chiếu ngược tới Roster
+    int  characterId;   
     int  currentHp;
-    int  currentMana;   // = 0 với Warrior (không dùng mana)
+    int  currentMana;   
 
     CombatantSlot();
     CombatantSlot(int id, int hp, int mana);
@@ -42,7 +42,7 @@ class Battle {
 public:
     Battle();
 
-    // --- Setup (gọi bởi BattleEngine::selectTeams) ---
+    
 
     // Gán hai Team và khởi tạo mảng slot; trả false nếu không hợp lệ
     //bool setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster);
