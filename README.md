@@ -4,10 +4,10 @@ Chương trình console mô phỏng trận đấu theo lượt giữa hai đội
 
 ## ⚙️ Môi trường & Công cụ Phát triển (Compiler & IDE Specs)
 Để đảm bảo nhất quán cho tất cả thành viên trong nhóm khi build và chạy code:
-- **Chuẩn C++**: ISO C++11 (`-std=c++11` đối với GCC / `/std:c++11` đối với MSVC).
+- **Chuẩn C++**: ISO C++17 (`-std=c++17` đối với GCC / `/std:c++17` đối với MSVC).
 - **Trình biên dịch (Compiler)**:
-  - GCC / MinGW g++ 8.0 trở lên (Linux / Windows MinGW).
-  - MSVC v143 / v145 (Microsoft Visual C++ đi kèm Visual Studio 2022).
+  - GCC / MinGW g++ 7.0 trở lên (Linux / Windows MinGW).
+  - MSVC v143 (Microsoft Visual C++ đi kèm Visual Studio 2022).
 - **IDE / Editor khuyên dùng**: Visual Studio 2022, VS Code (với C/C++ Extension Pack), CLion.
 - **Hệ điều hành**: Windows 10/11, Linux, macOS.
 
