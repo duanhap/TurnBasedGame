@@ -27,6 +27,11 @@ std::string Character::getName() const
 	return name;
 }
 
+std::string Character::getType() const
+{
+	return type;
+}
+
 bool Character::isAlive() const
 {
 	return maxHp > 0;
