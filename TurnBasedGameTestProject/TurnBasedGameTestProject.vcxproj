@@ -140,6 +140,7 @@
     </ClCompile>
     <ClCompile Include="CharacterRosterTest.cpp" />
     <ClCompile Include="WarriorTest.cpp" />
+    <ClCompile Include="TeamManagerTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
