@@ -6,19 +6,12 @@
 //#include "CharacterRoster.h"
 #include <string>
 
-// ----------------------------------------------------------------
-// Enum trạng thái trận đấu  
-// ----------------------------------------------------------------
 enum class BattleState {
     READY,       
     IN_PROGRESS, 
     FINISHED     
 };
 
-// ----------------------------------------------------------------
-// Lưu HP / Mana hiện tại của MỘT nhân vật trong phiên chiến đấu.
-// Tách khỏi Character để không làm bẩn dữ liệu gốc (roster).
-// ----------------------------------------------------------------
 struct CombatantSlot {
     int  characterId;   
     int  currentHp;
@@ -30,19 +23,11 @@ struct CombatantSlot {
     bool isAlive() const;
 };
 
-// ----------------------------------------------------------------
-// MAX sizes — số lượng nhân vật trong team
-// ----------------------------------------------------------------
 static const int MAX_TEAM_SIZE = 5;
 
-// ----------------------------------------------------------------
-// Battle — data container cho một phiên đấu
-// ----------------------------------------------------------------
 class Battle {
 public:
     Battle();
-
-    
 
     // Gán hai Team và khởi tạo mảng slot; trả false nếu không hợp lệ
     //bool setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster);
@@ -50,17 +35,17 @@ public:
     // Reset currentHp / currentMana về maxHp / maxMana (gọi khi Start)
     //void resetCombatants(const CharacterRoster& roster);
 
-    // --- Truy vấn trạng thái ---
+    
     BattleState getState() const;
     void        setState(BattleState s);
 
-    // Tên hai Team để hiển thị
+    
     const std::string& getTeamAName() const;
     const std::string& getTeamBName() const;
     int                getTeamAId()   const;
     int                getTeamBId()   const;
 
-    // Số nhân vật thực sự trong mỗi bên (≤ MAX_TEAM_SIZE)
+    
     int getSizeA() const;
     int getSizeB() const;
 
@@ -75,25 +60,24 @@ public:
     int  getTurnNumber() const;
     void incrementTurn();
 
-    // Bên đến lượt (0 = Team A, 1 = Team B), và chỉ số trong bên đó
+    
     int  getCurrentSide()  const;
     int  getCurrentIndex() const;
     void setCurrentSide(int side);
     void setCurrentIndex(int idx);
 
-    // Kiểm tra setup đã được gọi chưa
     bool isSetup() const;
 
 private:
     BattleState   m_state;
 
-    // Thông tin hai Team (chỉ tên + ID, không sở hữu Team object)
+    // Thông tin hai Team 
     int         m_teamAId;
     int         m_teamBId;
     std::string m_teamAName;
     std::string m_teamBName;
 
-    // Mảng slot cố định cho hai bên
+
     CombatantSlot m_slotsA[MAX_TEAM_SIZE];
     CombatantSlot m_slotsB[MAX_TEAM_SIZE];
     int           m_sizeA;

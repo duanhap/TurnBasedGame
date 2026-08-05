@@ -4,9 +4,6 @@
 //#include "Mage.h"
 #include <iostream>
 
-// ============================================================
-//  CombatantSlot
-// ============================================================
 CombatantSlot::CombatantSlot()
     : characterId(0), currentHp(0), currentMana(0)
 {
@@ -21,9 +18,7 @@ bool CombatantSlot::isAlive() const {
     return currentHp > 0;
 }
 
-// ============================================================
-//  Battle — constructor
-// ============================================================
+
 Battle::Battle()
     : m_state(BattleState::READY)
     , m_teamAId(0)
@@ -89,7 +84,7 @@ Battle::Battle()
 //}
 
 // ============================================================
-//  Reset HP/Mana về max — gọi khi Start  (TC-07)
+//  Reset HP/Mana về max — gọi khi Start  
 // ============================================================
 //void Battle::resetCombatants(const CharacterRoster& roster) {
 //    for (int i = 0; i < m_sizeA; ++i) {
@@ -108,9 +103,7 @@ Battle::Battle()
 //    }
 //}
 
-// ============================================================
-//  Getters / Setters
-// ============================================================
+
 BattleState Battle::getState()      const { return m_state; }
 void        Battle::setState(BattleState s) { m_state = s; }
 

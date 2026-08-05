@@ -3,9 +3,7 @@
 #include <limits>
 #include <string>
 
-// ============================================================
-//  Constructor
-// ============================================================
+
 //Menu::Menu(CharacterRoster& roster,
 //    TeamManager& teamManager,
 //    BattleEngine& battleEngine,
@@ -17,9 +15,7 @@
 //{
 //}
 
-// ============================================================
-//  Vòng lặp chính
-// ============================================================
+
 void Menu::run() {
     bool running = true;
     while (running) {

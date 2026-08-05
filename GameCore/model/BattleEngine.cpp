@@ -3,17 +3,12 @@
 #include <iostream>
 #include <string>
 
-// ============================================================
-//  Constructor
-// ============================================================
+
 //BattleEngine::BattleEngine()
 //    : m_roster(nullptr)
 //{
 //}
 
-// ============================================================
-//  selectTeams 
-// ============================================================
 //bool BattleEngine::selectTeams(const Team* teamA,
 //    const Team* teamB,
 //    const CharacterRoster& roster) {
@@ -25,9 +20,7 @@
 //    return ok;
 //}
 
-// ============================================================
-//  startBattle  
-// ============================================================
+
 //bool BattleEngine::startBattle() {
 //    // Chưa setup hoặc đang/đã diễn ra → từ chối
 //    if (!m_battle.isSetup())
@@ -56,26 +49,20 @@
 //    return true;
 //}
 
-// ============================================================
-//  performCurrentAction  
-// ============================================================
+
 bool BattleEngine::performCurrentAction(int targetCharacterId) {
-    // TC-15: battle chưa IN_PROGRESS → từ chối
     if (m_battle.getState() != BattleState::IN_PROGRESS)
         return false;
-
     // Xác định actor hiện tại
     int actorSide = m_battle.getCurrentSide();
     int actorIndex = m_battle.getCurrentIndex();
     CombatantSlot& actorSlot = m_battle.getSlot(actorSide, actorIndex);
 
-    // TC-13: actor đã bị hạ (không nên xảy ra nếu advanceToNextActor() đúng, nhưng guard)
     if (!actorSlot.isAlive()) {
         advanceToNextActor();
         return false;
     }
 
-    // TC-12: target phải còn sống và thuộc phe đối lập
     if (!isValidTarget(targetCharacterId, actorSide))
         return false;
 
@@ -101,7 +88,7 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     //targetChar->setCurrentMana(targetSlot.currentMana);
 
     // *** GỌI POLYMORPHIC — Warrior hoặc Mage tự quyết định implementation ***
-    //actorChar->performAction(*targetChar);  // FR-04: runtime polymorphism
+    //actorChar->performAction(*targetChar);  
 
     // Đọc lại trạng thái sau hành động và ghi ngược vào slot
     //actorSlot.currentMana = actorChar->getCurrentMana();
@@ -123,9 +110,7 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     return true;
 }
 
-// ============================================================
-//  Query methods
-// ============================================================
+
 bool BattleEngine::isInProgress() const {
     return m_battle.getState() == BattleState::IN_PROGRESS;
 }
@@ -154,7 +139,7 @@ const std::string* BattleEngine::getWinnerName() const {
 }
 
 // ============================================================
-//  printStatus  (FR-06, TC-07, TC-09...)
+//  printStatus 
 // ============================================================
 //void BattleEngine::printStatus(const CharacterRoster& roster) const {
 //    std::cout << "\n======================================\n";
@@ -220,9 +205,7 @@ const std::string* BattleEngine::getWinnerName() const {
 //    std::cout << "======================================\n";
 //}
 
-// ============================================================
-//  Helpers
-// ============================================================
+
 
 // Tìm (side, index) của một characterId trong battle
 bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const {
@@ -239,7 +222,7 @@ bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const 
     return false;
 }
 
-// Target hợp lệ: thuộc phe đối lập VÀ còn sống (TC-12)
+
 bool BattleEngine::isValidTarget(int targetId, int actorSide) const {
     int tSide = -1, tIndex = -1;
     if (!findSlot(targetId, tSide, tIndex)) return false;
@@ -247,11 +230,11 @@ bool BattleEngine::isValidTarget(int targetId, int actorSide) const {
     // Không được cùng phe
     if (tSide == actorSide) return false;
 
-    // Phải còn sống (TC-12)
+    // Phải còn sống
     return m_battle.getSlot(tSide, tIndex).isAlive();
 }
 
-// Advance sang nhân vật sống tiếp theo theo thứ tự luân phiên A/B (TC-13)
+
 void BattleEngine::advanceToNextActor() {
     int startSide = m_battle.getCurrentSide();
     int startIndex = m_battle.getCurrentIndex();
