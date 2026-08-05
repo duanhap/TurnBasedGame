@@ -11,9 +11,10 @@ protected:
 	// cons
 	Character();
 	Character(int, std::string, unsigned int, std::string);
+	
+public:
 	// des
 	virtual ~Character();
-public:
 	// getter
 	int getId() const;
 	int getMaxHp() const;
