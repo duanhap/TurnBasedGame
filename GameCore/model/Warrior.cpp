@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include <iostream>
 #include "Warrior.h"
 
@@ -21,4 +21,13 @@ bool Warrior::performAction(Character& target)
 		std::cout << "Loi: Target co hp = 0, khong the thuc hien hanh dong!" << std::endl;
 		return false;
 	}
+}
+void Warrior::display() const
+{
+    Character::display();
+
+    std::cout
+        << "Attack Power = "
+        << attackPower
+        << std::endl;
 }

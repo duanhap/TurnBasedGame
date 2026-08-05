@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "DataFileManager.h"
 #include "../model/Warrior.h"
 #include "../model/Mage.h"

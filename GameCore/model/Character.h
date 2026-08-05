@@ -20,6 +20,8 @@ public:
 	int getMaxHp() const;
 	std::string getName() const;
 	std::string getType() const;
+	// display
+	virtual void display() const;
 	// business logic
 	bool isAlive() const;
 	void reduceHp(unsigned int amount);

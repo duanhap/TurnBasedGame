@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "Mage.h"
 #include <iostream>
 
@@ -30,4 +30,15 @@ bool Mage::performAction(Character& target)
 		std::cout << "Loi: Target co hp = 0, khong the thuc hien hanh dong!" << std::endl;
 		return false;
 	}
+}
+void Mage::display() const
+{
+    Character::display();
+
+    std::cout
+        << "Mana = " << maxMana
+        << " | Spell Damage = " << spellDamage
+        << " | Mana Cost = " << manaCost
+        << " | Fallback Damage = " << fallbackDamage
+        << std::endl;
 }

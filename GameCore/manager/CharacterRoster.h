@@ -19,4 +19,5 @@ public:
 	int size() const; // trả về số lượng nhân vật.
 	std::vector<Character*> getAllCharacters() const;
 	bool hasCharacter(int charId) const; // trả về true nếu roster chứa nhân vật với charId đã cho
+	void displayAll() const; // in toàn bộ danh sách nhân vật ra console
 };

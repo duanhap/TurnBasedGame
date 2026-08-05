@@ -30,4 +30,5 @@ public:
     bool hasTeamId(int teamId) const;
     bool hasTeamName(string teamName) const;
     void clear();
+    void displayAllTeams(const CharacterRoster& roster) const;
 };

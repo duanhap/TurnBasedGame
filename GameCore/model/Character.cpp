@@ -1,5 +1,6 @@
-#include "pch.h"
+#include "../pch.h"
 #include "Character.h"
+#include <iostream>
 
 Character::Character(int id, std::string name, unsigned int maxHp, std::string type)
 	: id(id), name(name), maxHp(maxHp), type(type)
@@ -30,6 +31,14 @@ std::string Character::getName() const
 std::string Character::getType() const
 {
 	return type;
+}
+
+void Character::display() const
+{
+    std::cout << "[" << type << "] ID=" << id
+              << " | " << name
+              << " | HP=" << maxHp
+              << std::endl;
 }
 
 bool Character::isAlive() const

@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "TeamManager.h"
 #include <algorithm>
 #include <iostream>
@@ -146,4 +146,35 @@ bool TeamManager::hasTeamName(string teamName) const
         }
     }
     return false;
+}
+
+void TeamManager::displayAllTeams(const CharacterRoster& roster) const
+{
+    if (teams.empty()) {
+        cout << "(Chua co Team nao)" << endl;
+        return;
+    }
+    cout << "\n===== DANH SACH TEAM =====" << endl;
+    for (const auto& team : teams) {
+        cout << "[ID: " << team.getId() << "] " << team.getName() << endl;
+        const vector<int>& ids = team.getCharacterIds();
+        if (ids.empty()) {
+            cout << "  (Chua co nhan vat)" << endl;
+            continue;
+        }
+        for (int i = 0; i < (int)ids.size(); ++i) {
+            int charId = ids[i];
+            const Character* ch = roster.findById(charId);
+            cout << "  " << (i + 1) << ". ID=" << charId;
+            if (ch != nullptr) {
+                cout << " | " << ch->getName()
+                     << " [" << ch->getType() << "]"
+                     << " HP=" << ch->getMaxHp();
+            } else {
+                cout << " (khong tim thay trong Roster)";
+            }
+            cout << endl;
+        }
+    }
+    cout << "==========================" << endl;
 }

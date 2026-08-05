@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -13,63 +13,93 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\model">
+      <UniqueIdentifier>{A1B2C3D4-0001-0001-0001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\manager">
+      <UniqueIdentifier>{A1B2C3D4-0002-0002-0002-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\model">
+      <UniqueIdentifier>{A1B2C3D4-0003-0003-0003-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\manager">
+      <UniqueIdentifier>{A1B2C3D4-0004-0004-0004-000000000004}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <!-- Root headers -->
     <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <!-- model headers -->
+    <ClInclude Include="model\Battle.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
     <ClInclude Include="model\Character.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\model</Filter>
     </ClInclude>
     <ClInclude Include="model\Mage.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\model</Filter>
     </ClInclude>
     <ClInclude Include="model\Team.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\model</Filter>
     </ClInclude>
     <ClInclude Include="model\Warrior.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\model</Filter>
     </ClInclude>
-    <ClInclude Include="manager\DataFileManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="manager\TeamManager.h">
-      <Filter>Header Files</Filter>
+    <!-- manager headers -->
+    <ClInclude Include="manager\BattleEngine.h">
+      <Filter>Header Files\manager</Filter>
     </ClInclude>
     <ClInclude Include="manager\CharacterRoster.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="manager\DataFileManager.h">
+      <Filter>Header Files\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="manager\TeamManager.h">
+      <Filter>Header Files\manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <!-- Root sources -->
     <ClCompile Include="GameCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <!-- model sources -->
+    <ClCompile Include="model\Battle.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
     <ClCompile Include="model\Character.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\model</Filter>
     </ClCompile>
     <ClCompile Include="model\Mage.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\model</Filter>
     </ClCompile>
     <ClCompile Include="model\Team.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\model</Filter>
     </ClCompile>
     <ClCompile Include="model\Warrior.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\model</Filter>
     </ClCompile>
-    <ClCompile Include="manager\DataFileManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="manager\TeamManager.cpp">
-      <Filter>Source Files</Filter>
+    <!-- manager sources -->
+    <ClCompile Include="manager\BattleEngine.cpp">
+      <Filter>Source Files\manager</Filter>
     </ClCompile>
     <ClCompile Include="manager\CharacterRoster.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="manager\DataFileManager.cpp">
+      <Filter>Source Files\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="manager\TeamManager.cpp">
+      <Filter>Source Files\manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
