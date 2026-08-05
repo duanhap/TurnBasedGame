@@ -2,6 +2,21 @@
 #include "../GameCore/model/Warrior.h"
 #include "../GameCore/model/Mage.h"
 
+
+TEST(WarriorTest, TC09AresDanhLuna)
+{
+  // Arrange
+  Warrior ares(1, "Ares", 100, "Warrior", 30); // attackPower = 30
+  Mage luna(2, "Luna", 80, "Mage", 100, 80, 40, 10); // hp = 80
+
+  // Act
+	bool result = ares.performAction(luna);
+  // Assert
+	EXPECT_TRUE(result);
+	EXPECT_EQ(luna.getMaxHp(), 50u); // 80 - 30 = 50
+}
+
+
 TEST(WarriorTest, PerformActionReducesTargetHp)
 {
     // Arrange

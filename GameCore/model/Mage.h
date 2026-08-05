@@ -10,4 +10,5 @@ public:
 	Mage(int, std::string, unsigned int, std::string, unsigned int, unsigned int, unsigned int, unsigned int);
 	~Mage() = default;
 	bool performAction(Character& target) override;
+	unsigned int getMaxMana() const { return maxMana; }
 };
