@@ -6,8 +6,8 @@ class Mage : public Character
 private:
 	unsigned int maxMana, spellDamage, manaCost, fallbackDamage;
 public:
-	Mage();
+	Mage() = default;
 	Mage(int, std::string, unsigned int, std::string, unsigned int, unsigned int, unsigned int, unsigned int);
-	~Mage();
+	~Mage() = default;
 	bool performAction(Character& target) override;
 };
