@@ -210,3 +210,51 @@ TEST(DataFileManagerTest, LoadTeams_InvalidCharacters_SkipsInvalidAndContinues)
 
     std::remove(testFile.c_str());
 }
+
+// TC-01: Nạp file có 5 dòng hợp lệ và 1 dòng sai
+TEST(DataFileManagerTest, TC01_LoadTeams_FiveValidOneInvalid_Succeeds)
+{
+    std::string testFile = "test_five_valid_one_invalid.txt";
+
+    CharacterRoster roster;
+    roster.add(makeTestWarrior(10, "Char1"));
+    roster.add(makeTestWarrior(20, "Char2"));
+    roster.add(makeTestWarrior(30, "Char3"));
+    roster.add(makeTestWarrior(40, "Char4"));
+    roster.add(makeTestWarrior(50, "Char5"));
+
+    std::ofstream outfile(testFile);
+    outfile << "1|TeamOne|10\n";
+    outfile << "2|TeamTwo|20\n";
+    outfile << "3|TeamThree|30\n";
+    outfile << "4|TeamFour|40\n";
+    outfile << "5|TeamFive|50\n";
+    outfile << "invalid_line_no_pipe_symbol\n"; // Invalid line
+    outfile.close();
+
+    TeamManager manager;
+    EXPECT_TRUE(DataFileManager::loadTeams(testFile, manager, roster));
+
+    // Must successfully load 5 valid teams, skip the invalid one, and not crash
+    EXPECT_EQ(manager.getTeams().size(), 5);
+    EXPECT_TRUE(manager.hasTeamId(1));
+    EXPECT_TRUE(manager.hasTeamId(2));
+    EXPECT_TRUE(manager.hasTeamId(3));
+    EXPECT_TRUE(manager.hasTeamId(4));
+    EXPECT_TRUE(manager.hasTeamId(5));
+
+    std::remove(testFile.c_str());
+}
+
+// TC-17: Chạy khi file chưa tồn tại hoặc file không thể đọc/ghi
+TEST(DataFileManagerTest, TC17_LoadTeams_FileDoesNotExist_ReturnsTrueAndRosterIsEmpty)
+{
+    std::string nonExistentFile = "non_existent_teams_data_file.txt";
+    TeamManager manager;
+    CharacterRoster roster;
+
+    // Must return true (as it initializes empty list), not crash
+    EXPECT_TRUE(DataFileManager::loadTeams(nonExistentFile, manager, roster));
+    EXPECT_TRUE(manager.getTeams().empty());
+}
+
