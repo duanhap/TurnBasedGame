@@ -145,14 +145,20 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="model\Character.h" />
+    <ClInclude Include="model\DataFileManager.h" />
     <ClInclude Include="model\Mage.h" />
+    <ClInclude Include="model\Team.h" />
+    <ClInclude Include="model\TeamManager.h" />
     <ClInclude Include="model\Warrior.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameCore.cpp" />
     <ClCompile Include="model\Character.cpp" />
+    <ClCompile Include="model\DataFileManager.cpp" />
     <ClCompile Include="model\Mage.cpp" />
+    <ClCompile Include="model\Team.cpp" />
+    <ClCompile Include="model\TeamManager.cpp" />
     <ClCompile Include="model\Warrior.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
