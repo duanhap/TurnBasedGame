@@ -20,6 +20,10 @@ string Team::getName() const
 {
     return teamName;
 }
+int Team::getSize() const
+{
+    return characterIds.size();
+}
 
 void Team::setName(string name)
 {

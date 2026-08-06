@@ -10,9 +10,9 @@ class BattleEngine {
 public:
     BattleEngine();
 
-    bool selectTeams(const Team* teamA,
-        const Team* teamB,
-        const CharacterRoster& roster);
+    bool selectTeams(const Team*    teamA,
+                     const Team*    teamB,
+                     CharacterRoster& roster);
 
     bool startBattle();
 
@@ -21,15 +21,15 @@ public:
     bool isInProgress() const;
     bool isFinished()   const;
 
-    //const Character* getCurrentActor() const;
+    const Character* getCurrentActor() const;
 
     const std::string* getWinnerName() const;
 
-    //void printStatus(const CharacterRoster& roster) const;
+    void printStatus(const CharacterRoster& roster) const;
 
 private:
     Battle           m_battle;
-    const CharacterRoster* m_roster;
+    CharacterRoster* m_roster; // non-const để gọi findById() mutable
 
     bool findSlot(int characterId, int& outSide, int& outIndex) const;
     //bool getCurrentActorSlot(int& outSide, int& outIndex) const;

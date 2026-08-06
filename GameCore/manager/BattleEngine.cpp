@@ -9,7 +9,7 @@
 
 bool BattleEngine::selectTeams(const Team* teamA,
     const Team* teamB,
-    const CharacterRoster& roster) {
+    CharacterRoster& roster) {
     bool ok = m_battle.setup(teamA, teamB, roster);
     if (ok) {
         m_roster = &roster;
@@ -50,29 +50,17 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     if (!isValidTarget(targetCharacterId, actorSide))
         return false;
 
-    //Character* actorChar = m_roster->findById(actorSlot.characterId);
-    //if (actorChar == nullptr) return false;
+    Character* actorChar = m_roster->findById(actorSlot.characterId);
+    if (actorChar == nullptr) return false;
 
     int targetSide = -1, targetIndex = -1;
     if (!findSlot(targetCharacterId, targetSide, targetIndex))
         return false;
     CombatantSlot& targetSlot = m_battle.getSlot(targetSide, targetIndex);
 
-    //actorChar->setCurrentHp(actorSlot.currentHp);
-    //actorChar->setCurrentMana(actorSlot.currentMana);
-
-    //Character* targetChar = m_roster->findById(targetCharacterId);
-    //if (targetChar == nullptr) return false;
-    //targetChar->setCurrentHp(targetSlot.currentHp);
-    //targetChar->setCurrentMana(targetSlot.currentMana);
-
-    // *** RUNTIME POLYMORPHISM ***
-    //actorChar->performAction(*targetChar);
-
-    //actorSlot.currentMana = actorChar->getCurrentMana();
-    //targetSlot.currentHp  = targetChar->getCurrentHp();
-
-    if (targetSlot.currentHp < 0) targetSlot.currentHp = 0;
+    // *** RUNTIME POLYMORPHISM — không có dynamic_cast, không có if/switch ***
+    // Warrior hoặc Mage tự quyết định hành vi dựa trên slot phiên đấu
+    actorChar->performActionInBattle(actorSlot, targetSlot);
 
     if (!m_battle.hasAlive(targetSide)) {
         m_battle.setState(BattleState::FINISHED);
@@ -92,15 +80,15 @@ bool BattleEngine::isFinished() const {
     return m_battle.getState() == BattleState::FINISHED;
 }
 
-//const Character* BattleEngine::getCurrentActor() const {
-//    if (m_battle.getState() != BattleState::IN_PROGRESS) return nullptr;
-//    if (m_roster == nullptr) return nullptr;
-//    int side  = m_battle.getCurrentSide();
-//    int index = m_battle.getCurrentIndex();
-//    const CombatantSlot& slot = m_battle.getSlot(side, index);
-//    if (!slot.isAlive()) return nullptr;
-//    return m_roster->findById(slot.characterId);
-//}
+const Character* BattleEngine::getCurrentActor() const {
+    if (m_battle.getState() != BattleState::IN_PROGRESS) return nullptr;
+    if (m_roster == nullptr) return nullptr;
+    int side  = m_battle.getCurrentSide();
+    int index = m_battle.getCurrentIndex();
+    const CombatantSlot& slot = m_battle.getSlot(side, index);
+    if (!slot.isAlive()) return nullptr;
+    return m_roster->findById(slot.characterId);
+}
 
 const std::string* BattleEngine::getWinnerName() const {
     if (m_battle.getState() != BattleState::FINISHED) return nullptr;
@@ -109,6 +97,49 @@ const std::string* BattleEngine::getWinnerName() const {
 }
 
 //void BattleEngine::printStatus(const CharacterRoster& roster) const { ... }
+void BattleEngine::printStatus(const CharacterRoster& roster) const {
+    std::cout << "\n======================================\n";
+    std::cout << "Trang thai: ";
+    switch (m_battle.getState()) {
+        case BattleState::READY:       std::cout << "READY\n";       break;
+        case BattleState::IN_PROGRESS: std::cout << "IN_PROGRESS\n"; break;
+        case BattleState::FINISHED:    std::cout << "FINISHED\n";    break;
+    }
+    if (!m_battle.isSetup()) {
+        std::cout << "(Chua chon Team)\n======================================\n";
+        return;
+    }
+    std::cout << "Luot: " << m_battle.getTurnNumber() << "\n";
+    for (int side = 0; side < 2; ++side) {
+        const std::string& teamName = (side == 0)
+            ? m_battle.getTeamAName() : m_battle.getTeamBName();
+        int size = (side == 0) ? m_battle.getSizeA() : m_battle.getSizeB();
+        std::cout << "\n[" << teamName << "]\n";
+        std::cout << "  ID  | Ten             | HP      | Mana   | Status\n";
+        std::cout << "------|-----------------|---------|--------|-------\n";
+        for (int i = 0; i < size; ++i) {
+            const CombatantSlot& slot = m_battle.getSlot(side, i);
+            const Character* ch = roster.findById(slot.characterId);
+            if (ch == nullptr) continue;
+            bool isCurrent = (m_battle.getState() == BattleState::IN_PROGRESS
+                              && side  == m_battle.getCurrentSide()
+                              && i     == m_battle.getCurrentIndex());
+            std::cout << (isCurrent ? ">>>" : "   ");
+            std::cout << " " << ch->getId() << " | ";
+            std::string nm = ch->getName();
+            if (nm.size() > 15) nm = nm.substr(0, 15);
+            std::cout << nm;
+            for (int p = (int)nm.size(); p < 15; ++p) std::cout << ' ';
+            std::cout << " | " << slot.currentHp << "/" << ch->getMaxHp();
+            if (ch->getMaxMana() > 0)
+                std::cout << " | " << slot.currentMana << "/" << ch->getMaxMana();
+            else
+                std::cout << " | -      ";
+            std::cout << " | " << (slot.isAlive() ? "Alive" : "KO") << "\n";
+        }
+    }
+    std::cout << "======================================\n";
+}
 
 bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const {
     for (int side = 0; side < 2; ++side) {

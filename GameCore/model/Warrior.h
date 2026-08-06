@@ -16,5 +16,6 @@ public:
 	unsigned int getAttackPower() const { return attackPower; }
 	bool setAttackPower(int newAttackPower);
 	bool performAction(Character& target) override;
+	void performActionInBattle(CombatantSlot& actorSlot, CombatantSlot& targetSlot) override;
 	void display() const override;
 };
