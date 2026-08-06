@@ -1,8 +1,6 @@
 # Dinh dang du lieu Nhan vat (characters.txt)
 # WARRIOR|id|name|maxHp|attackPower
 # MAGE|id|name|maxHp|maxMana|spellDamage|manaCost|fallbackDamage
-
-# --- NHAN VAT HOP LE (VALID CHARACTERS) ---
 WARRIOR|101|Ares|100|30
 MAGE|102|Luna|80|10|40|10|10
 WARRIOR|1|Arthur|150|25
@@ -10,20 +8,5 @@ WARRIOR|2|Garen|180|20
 WARRIOR|3|Thor|160|35
 MAGE|4|Gandalf|100|80|50|15|10
 MAGE|5|Loki|110|70|40|12|8
-MAGE|6|Yennefer|95|90|55|18|12
-
-# --- NHAN VAT SAI DINH DANG DE TEST/DEMO (MALFORMED CHARACTERS) ---
-# 1. Thieu truong cho WARRIOR (Chi co 4 truong thay vi 5)
-WARRIOR|7|InvalidWarrior|120
-
-# 2. Sai kieu ID (Chu thay vi so)
-WARRIOR|abc|WrongIDType|120|20
-
-# 3. Ten nhan vat bi de trong
-MAGE|8||100|80|50|15|10
-
-# 4. HP khong hop le (So am)
-MAGE|9|BadHP|-50|80|50|15|10
-
-# 5. Loai nhan vat khong duoc ho tro (ARCHER)
-ARCHER|10|RobinHood|100|20
+MAGE|6|Harry Potter|95|90|55|18|12
+MAGE|7|Aladin|500|200|400|20|150
