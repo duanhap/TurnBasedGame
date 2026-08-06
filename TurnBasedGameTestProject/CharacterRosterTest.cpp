@@ -479,3 +479,324 @@ TEST(CharacterRosterTest, HasCharacter_AfterRemove_ReturnsFalse)
     // Assert
     EXPECT_FALSE(roster.hasCharacter(1));
 }
+
+
+// ===========================================================================
+// findByName()
+// ===========================================================================
+
+TEST(CharacterRosterTest, FindByName_ExactMatch_ReturnsCharacter)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act
+    auto result = roster.findByName("Ares");
+    // Assert
+    ASSERT_EQ(result.size(), 1u);
+    EXPECT_EQ(result[0]->getName(), "Ares");
+}
+
+TEST(CharacterRosterTest, FindByName_CaseInsensitive_ReturnsMatch)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act
+    auto result = roster.findByName("ares");
+    // Assert
+    ASSERT_EQ(result.size(), 1u);
+    EXPECT_EQ(result[0]->getName(), "Ares");
+}
+
+TEST(CharacterRosterTest, FindByName_SubstringMatch_ReturnsAll)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "WarriorKing"));
+    roster.add(makeWarrior(2, "DarkWarrior"));
+    roster.add(makeMage(3, "Luna"));
+    // Act
+    auto result = roster.findByName("war");
+    // Assert
+    EXPECT_EQ(result.size(), 2u);
+}
+
+TEST(CharacterRosterTest, FindByName_NoMatch_ReturnsEmpty)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act
+    auto result = roster.findByName("xyz");
+    // Assert
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(CharacterRosterTest, FindByName_EmptyString_ReturnsEmpty)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act
+    auto result = roster.findByName("");
+    // Assert
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(CharacterRosterTest, FindByName_EmptyRoster_ReturnsEmpty)
+{
+    // Arrange
+    CharacterRoster roster;
+    // Act
+    auto result = roster.findByName("Ares");
+    // Assert
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(CharacterRosterTest, FindByName_MultipleMatchesMixedCase_ReturnsAll)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Luna"));
+    roster.add(makeMage(2, "LUNA"));
+    roster.add(makeWarrior(3, "luna"));
+    // Act
+    auto result = roster.findByName("luna");
+    // Assert
+    EXPECT_EQ(result.size(), 3u);
+}
+
+
+// ===========================================================================
+// updateWarrior()
+// ===========================================================================
+
+TEST(CharacterRosterTest, UpdateWarrior_ValidData_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act
+    bool result = roster.updateWarrior(1, "NewAres", CHARACTER_MAX_HP_UPPER, static_cast<int>(WARRIOR_ATTACK_POWER_UPPER));
+    // Assert
+    EXPECT_TRUE(result);
+    const Character* c = roster.findById(1);
+    ASSERT_NE(c, nullptr);
+    EXPECT_EQ(c->getName(), "NewAres");
+    EXPECT_EQ(c->getMaxHp(), static_cast<int>(CHARACTER_MAX_HP_UPPER));
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_NonExistingId_ReturnsFalse)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act
+    bool result = roster.updateWarrior(999, "NewName", 100, 30);
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_OnMage_ReturnsFalse)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna"));
+    // Act: try to update a Mage as if it were a Warrior
+    bool result = roster.updateWarrior(1, "NewLuna", 100, 30);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // unchanged
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_InvalidName_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act: name with special char
+    bool result = roster.updateWarrior(1, "Ares@", 150, 30);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Ares"); // unchanged
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_HpAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act
+    bool result = roster.updateWarrior(1, "NewAres", CHARACTER_MAX_HP_UPPER + 1, 30);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Ares"); // name rolled back
+    EXPECT_EQ(roster.findById(1)->getMaxHp(), 100); // hp unchanged
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_AttackAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act
+    bool result = roster.updateWarrior(1, "NewAres", 150, static_cast<int>(WARRIOR_ATTACK_POWER_UPPER) + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Ares"); // rolled back
+    EXPECT_EQ(roster.findById(1)->getMaxHp(), 100); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_NegativeAttack_ReturnsFalse)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act
+    bool result = roster.updateWarrior(1, "NewAres", 100, -5);
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+TEST(CharacterRosterTest, UpdateWarrior_BoundaryValues_ReturnsTrue)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares", 100));
+    // Act: use lower bounds
+    bool result = roster.updateWarrior(1, "A", CHARACTER_MAX_HP_LOWER, static_cast<int>(WARRIOR_ATTACK_POWER_LOWER));
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "A");
+    EXPECT_EQ(roster.findById(1)->getMaxHp(), static_cast<int>(CHARACTER_MAX_HP_LOWER));
+}
+
+
+// ===========================================================================
+// updateMage()
+// ===========================================================================
+
+TEST(CharacterRosterTest, UpdateMage_ValidData_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", 100, MAGE_MANA_UPPER, MAGE_SPELL_DAMAGE_UPPER, MAGE_MANA_COST_UPPER, MAGE_FALLBACK_DAMAGE_UPPER);
+    // Assert
+    EXPECT_TRUE(result);
+    const Character* c = roster.findById(1);
+    ASSERT_NE(c, nullptr);
+    EXPECT_EQ(c->getName(), "NewLuna");
+    EXPECT_EQ(c->getMaxHp(), 100);
+}
+
+TEST(CharacterRosterTest, UpdateMage_NonExistingId_ReturnsFalse)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna"));
+    // Act
+    bool result = roster.updateMage(999, "New", 100, 50, 30, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+}
+
+TEST(CharacterRosterTest, UpdateMage_OnWarrior_ReturnsFalse)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeWarrior(1, "Ares"));
+    // Act: try to update a Warrior as if it were a Mage
+    bool result = roster.updateMage(1, "NewAres", 100, 50, 30, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Ares"); // unchanged
+}
+
+TEST(CharacterRosterTest, UpdateMage_InvalidName_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "Luna!", 100, 50, 30, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna");
+}
+
+TEST(CharacterRosterTest, UpdateMage_HpAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", CHARACTER_MAX_HP_UPPER + 1, 50, 30, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateMage_ManaAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", 100, MAGE_MANA_UPPER + 1, 30, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // rolled back
+    EXPECT_EQ(roster.findById(1)->getMaxHp(), 80); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateMage_SpellDamageAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", 100, 50, MAGE_SPELL_DAMAGE_UPPER + 1, 10, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateMage_ManaCostAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", 100, 50, 30, MAGE_MANA_COST_UPPER + 1, 5);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateMage_FallbackDamageAboveUpper_ReturnsFalseAndRollsBack)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act
+    bool result = roster.updateMage(1, "NewLuna", 100, 50, 30, 10, MAGE_FALLBACK_DAMAGE_UPPER + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "Luna"); // rolled back
+}
+
+TEST(CharacterRosterTest, UpdateMage_BoundaryLowerValues_ReturnsTrue)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeMage(1, "Luna", 80));
+    // Act: all lower bounds
+    bool result = roster.updateMage(1, "L", CHARACTER_MAX_HP_LOWER, MAGE_MANA_LOWER, MAGE_SPELL_DAMAGE_LOWER, MAGE_MANA_COST_LOWER, MAGE_FALLBACK_DAMAGE_LOWER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(roster.findById(1)->getName(), "L");
+    EXPECT_EQ(roster.findById(1)->getMaxHp(), static_cast<int>(CHARACTER_MAX_HP_LOWER));
+}

@@ -2,8 +2,8 @@
 #include <iostream>
 #include "Warrior.h"
 
-Warrior::Warrior(int id, std::string name, unsigned int maxHp, std::string type, int attackDamage)
-	: Character(id, name, maxHp, type), attackPower(attackDamage)
+Warrior::Warrior(int id, std::string name, unsigned int maxHp, std::string type, int attackPower)
+	: Character(id, name, maxHp, type), attackPower(attackPower)
 {
 
 }
@@ -35,4 +35,11 @@ void Warrior::display() const
         << "Attack Power = "
         << attackPower
         << std::endl;
+}
+
+bool Warrior::setAttackPower(int newAttackPower)
+{
+	if (newAttackPower < static_cast<int>(WARRIOR_ATTACK_POWER_LOWER) || newAttackPower > static_cast<int>(WARRIOR_ATTACK_POWER_UPPER)) return false;
+	attackPower = static_cast<unsigned int>(newAttackPower);
+	return true;
 }

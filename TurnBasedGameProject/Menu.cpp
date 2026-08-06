@@ -99,21 +99,15 @@ void Menu::doAddCharacter() {
     std::cout << "  2. Mage\n";
     int typeChoice = readInt("Chon loai: ", 1, 2);
 
-    int id;
-    std::cout << "Nhap ID (so nguyen duong): ";
-    id = readInt("", 1, std::numeric_limits<int>::max());
+    int id = readInt("Nhap ID (so nguyen duong): ", 1, std::numeric_limits<int>::max());
 
     std::string name;
     readNonEmptyString("Nhap ten nhan vat: ", name);
 
-    int maxHp;
-    std::cout << "Nhap maxHp (> 0): ";
-    maxHp = readInt("", 1, std::numeric_limits<int>::max());
+    int maxHp = readInt("Nhap maxHp (> 0): ", 1, std::numeric_limits<int>::max());
 
     if (typeChoice == 1) {
-        int attackPower;
-        std::cout << "Nhap attackPower (> 0): ";
-        attackPower = readInt("", 1, std::numeric_limits<int>::max());
+        int attackPower = readInt("Nhap attackPower (> 0): ", 1, std::numeric_limits<int>::max());
 
         auto warrior = std::make_unique<Warrior>(id, name, (unsigned int)maxHp, "WARRIOR", attackPower);
         int result = m_roster.add(std::move(warrior));
@@ -123,15 +117,10 @@ void Menu::doAddCharacter() {
             std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
         }
     } else {
-        int maxMana, spellDamage, manaCost, fallbackDamage;
-        std::cout << "Nhap maxMana (> 0): ";
-        maxMana = readInt("", 1, std::numeric_limits<int>::max());
-        std::cout << "Nhap spellDamage (> 0): ";
-        spellDamage = readInt("", 1, std::numeric_limits<int>::max());
-        std::cout << "Nhap manaCost (> 0): ";
-        manaCost = readInt("", 1, std::numeric_limits<int>::max());
-        std::cout << "Nhap fallbackDamage (> 0): ";
-        fallbackDamage = readInt("", 1, std::numeric_limits<int>::max());
+        int maxMana = readInt("Nhap maxMana (> 0): ", 1, std::numeric_limits<int>::max());
+        int spellDamage = readInt("Nhap spellDamage (> 0): ", 1, std::numeric_limits<int>::max());
+        int manaCost = readInt("Nhap manaCost (> 0): ", 1, std::numeric_limits<int>::max());
+        int fallbackDamage = readInt("Nhap fallbackDamage (> 0): ", 1, std::numeric_limits<int>::max());
 
         auto mage = std::make_unique<Mage>(id, name, (unsigned int)maxHp, "MAGE",
             (unsigned int)maxMana, (unsigned int)spellDamage,
@@ -147,9 +136,7 @@ void Menu::doAddCharacter() {
 
 void Menu::doEditCharacter() {
     std::cout << "\n-- Chinh sua nhan vat --\n";
-    int id;
-    std::cout << "Nhap ID nhan vat can sua: ";
-    id = readInt("", 1, std::numeric_limits<int>::max());
+    int id = readInt("Nhap ID nhan vat can sua: ", 1, std::numeric_limits<int>::max());
 
      //Kiểm tra tồn tại — roster trả về pointer hoặc nullptr
     const Character* ch = m_roster.findById(id);
@@ -162,28 +149,19 @@ void Menu::doEditCharacter() {
     std::string newName;
     readNonEmptyString("Ten moi (giu nguyen nhap lai ten cu): ", newName);
 
-    int newMaxHp;
-    std::cout << "maxHp moi (> 0): ";
-    newMaxHp = readInt("", 1, std::numeric_limits<int>::max());
+    int newMaxHp = readInt("maxHp moi (> 0): ", 1, std::numeric_limits<int>::max());
 
     bool ok = false;
     // Phân nhánh theo loại để nhập đúng chỉ số — việc quyết định loại chỉ xảy ra tại đây (UI)
     //if (ch->getType() == CharacterType::WARRIOR) {
-    //    int attackPower;
-    //    std::cout << "attackPower moi (> 0): ";
-    //    attackPower = readInt("", 1, std::numeric_limits<int>::max());
+    //    int attackPower = readInt("attackPower moi (> 0): ", 1, std::numeric_limits<int>::max());
     //    ok = m_roster.updateWarrior(id, newName, newMaxHp, attackPower);
     //}
     //else {
-    //    int maxMana, spellDamage, manaCost, fallbackDamage;
-    //    std::cout << "maxMana moi (> 0): ";
-    //    maxMana = readInt("", 1, std::numeric_limits<int>::max());
-    //    std::cout << "spellDamage moi (> 0): ";
-    //    spellDamage = readInt("", 1, std::numeric_limits<int>::max());
-    //    std::cout << "manaCost moi (> 0): ";
-    //    manaCost = readInt("", 1, std::numeric_limits<int>::max());
-    //    std::cout << "fallbackDamage moi (> 0): ";
-    //    fallbackDamage = readInt("", 1, std::numeric_limits<int>::max());
+    //    int maxMana = readInt("maxMana moi (> 0): ", 1, std::numeric_limits<int>::max());
+    //    int spellDamage = readInt("spellDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
+    //    int manaCost = readInt("manaCost moi (> 0): ", 1, std::numeric_limits<int>::max());
+    //    int fallbackDamage = readInt("fallbackDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
     //    ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
     //}
 
@@ -197,9 +175,7 @@ void Menu::doEditCharacter() {
 
 void Menu::doDeleteCharacter() {
     std::cout << "\n-- Xoa nhan vat --\n";
-    int id;
-    std::cout << "Nhap ID nhan vat can xoa: ";
-    id = readInt("", 1, std::numeric_limits<int>::max());
+    int id = readInt("Nhap ID nhan vat can xoa: ", 1, std::numeric_limits<int>::max());
 
     m_teamManager.removeCharacterFromAllTeams(id);
 
@@ -219,9 +195,7 @@ void Menu::doFindCharacter() const {
     int choice = readInt("Chon: ", 1, 2);
 
     if (choice == 1) {
-        int id;
-        std::cout << "Nhap ID: ";
-        id = readInt("", 1, std::numeric_limits<int>::max());
+        int id = readInt("Nhap ID: ", 1, std::numeric_limits<int>::max());
         const Character* ch = m_roster.findById(id);
         if (ch != nullptr) {
             ch->display();
@@ -278,9 +252,7 @@ void Menu::doListTeams() const {
 
 void Menu::doCreateTeam() {
     std::cout << "\n-- Tao Team moi --\n";
-    int teamId;
-    std::cout << "Nhap Team ID (so nguyen duong): ";
-    teamId = readInt("", 1, std::numeric_limits<int>::max());
+    int teamId = readInt("Nhap Team ID (so nguyen duong): ", 1, std::numeric_limits<int>::max());
 
     std::string teamName;
     readNonEmptyString("Nhap ten Team: ", teamName);
@@ -296,9 +268,7 @@ void Menu::doCreateTeam() {
 
 void Menu::doRenameTeam() {
     std::cout << "\n-- Doi ten Team --\n";
-    int teamId;
-    std::cout << "Nhap Team ID: ";
-    teamId = readInt("", 1, std::numeric_limits<int>::max());
+    int teamId = readInt("Nhap Team ID: ", 1, std::numeric_limits<int>::max());
 
     std::string newName;
     readNonEmptyString("Ten moi: ", newName);
@@ -314,9 +284,7 @@ void Menu::doRenameTeam() {
 
 void Menu::doDeleteTeam() {
     std::cout << "\n-- Xoa Team --\n";
-    int teamId;
-    std::cout << "Nhap Team ID: ";
-    teamId = readInt("", 1, std::numeric_limits<int>::max());
+    int teamId = readInt("Nhap Team ID: ", 1, std::numeric_limits<int>::max());
 
     bool ok = m_teamManager.deleteTeam(teamId);
     if (ok) {
@@ -329,13 +297,8 @@ void Menu::doDeleteTeam() {
 
 void Menu::doAddCharacterToTeam() {
     std::cout << "\n-- Them nhan vat vao Team --\n";
-    int teamId;
-    std::cout << "Nhap Team ID: ";
-    teamId = readInt("", 1, std::numeric_limits<int>::max());
-
-    int charId;
-    std::cout << "Nhap Character ID: ";
-    charId = readInt("", 1, std::numeric_limits<int>::max());
+    int teamId = readInt("Nhap Team ID: ", 1, std::numeric_limits<int>::max());
+    int charId = readInt("Nhap Character ID: ", 1, std::numeric_limits<int>::max());
 
     bool ok = m_teamManager.addCharacterToTeam(teamId, charId, m_roster);
 
@@ -349,13 +312,8 @@ void Menu::doAddCharacterToTeam() {
 
 void Menu::doRemoveCharacterFromTeam() {
     std::cout << "\n-- Xoa nhan vat khoi Team --\n";
-    int teamId;
-    std::cout << "Nhap Team ID: ";
-    teamId = readInt("", 1, std::numeric_limits<int>::max());
-
-    int charId;
-    std::cout << "Nhap Character ID: ";
-    charId = readInt("", 1, std::numeric_limits<int>::max());
+    int teamId = readInt("Nhap Team ID: ", 1, std::numeric_limits<int>::max());
+    int charId = readInt("Nhap Character ID: ", 1, std::numeric_limits<int>::max());
 
     bool ok = m_teamManager.removeCharacterFromTeam(teamId, charId);
     if (ok) {
@@ -400,11 +358,8 @@ void Menu::doSelectTeams() {
     m_teamManager.displayAllTeams(m_roster);
 
 
-    int idA, idB;
-    std::cout << "Nhap Team ID (doi A): ";
-    idA = readInt("", 1, std::numeric_limits<int>::max());
-    std::cout << "Nhap Team ID (doi B): ";
-    idB = readInt("", 1, std::numeric_limits<int>::max());
+    int idA = readInt("Nhap Team ID (doi A): ", 1, std::numeric_limits<int>::max());
+    int idB = readInt("Nhap Team ID (doi B): ", 1, std::numeric_limits<int>::max());
 
     // Lấy pointer tới Team từ TeamManager
     const Team* teamA = m_teamManager.getTeam(idA);
@@ -498,17 +453,19 @@ int Menu::readInt(const char* prompt, int minVal, int maxVal) const {
             std::cout << prompt;
         }
         if (std::cin >> value) {
-            // Đọc thành công — kiểm tra phạm vi
-            clearInputStream(); // bỏ ký tự '\n' còn lại
+            clearInputStream();
             if (value >= minVal && value <= maxVal) {
                 return value;
             }
-            std::cout << "[LOI] Vui long nhap so trong khoang [" << minVal << ", " << maxVal << "]: ";
+            std::cout << "[LOI] Vui long nhap so trong khoang [" << minVal << ", " << maxVal << "].\n";
         }
         else {
-            // Không phải số nguyên
+            if (std::cin.eof()) {
+                std::cout << "\n[LOI] Phat hien ket thuc luong nhap (EOF). Thoat chuong trinh.\n";
+                exit(0);
+            }
             clearInputStream();
-            std::cout << "[LOI] Input khong hop le. Vui long nhap lai: ";
+            std::cout << "[LOI] Input khong hop le (phai la so nguyen). Vui long nhap lai.\n";
         }
     }
 }
@@ -516,7 +473,15 @@ int Menu::readInt(const char* prompt, int minVal, int maxVal) const {
 void Menu::readNonEmptyString(const char* prompt, std::string& out) const {
     while (true) {
         std::cout << prompt;
-        std::getline(std::cin, out);
+        if (!std::getline(std::cin, out)) {
+            if (std::cin.eof()) {
+                std::cout << "\n[LOI] Phat hien ket thuc luong nhap (EOF). Thoat chuong trinh.\n";
+                exit(0);
+            }
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
         // Trim khoảng trắng đầu cuối đơn giản
         size_t start = out.find_first_not_of(" \t\r\n");
         if (start != std::string::npos) {
@@ -524,14 +489,14 @@ void Menu::readNonEmptyString(const char* prompt, std::string& out) const {
             out = out.substr(start, end - start + 1);
             return;
         }
-        std::cout << "[LOI] Ten khong duoc rong. Vui long nhap lai.\n";
+        std::cout << "[LOI] Noi dung nhap vao khong duoc de trong. Vui long nhap lai.\n";
     }
 }
 
 void Menu::clearInputStream() const {
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (std::cin.fail()) {
         std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
+
