@@ -88,4 +88,230 @@ TEST(MageTest, PerformActionZeroManaCostCastsSpellWithoutDrainingMana)
 }
 
 
+// ===========================================================================
+// setMaxMana()
+// ===========================================================================
 
+TEST(MageTest, SetMaxMana_ValidValue_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setMaxMana(100);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getMaxMana(), 100u);
+}
+
+TEST(MageTest, SetMaxMana_LowerBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setMaxMana(MAGE_MANA_LOWER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getMaxMana(), MAGE_MANA_LOWER);
+}
+
+TEST(MageTest, SetMaxMana_UpperBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setMaxMana(MAGE_MANA_UPPER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getMaxMana(), MAGE_MANA_UPPER);
+}
+
+TEST(MageTest, SetMaxMana_Zero_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setMaxMana(0);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getMaxMana(), 50u);
+}
+
+TEST(MageTest, SetMaxMana_AboveUpper_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setMaxMana(MAGE_MANA_UPPER + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getMaxMana(), 50u);
+}
+
+
+// ===========================================================================
+// setSpellDamage()
+// ===========================================================================
+
+TEST(MageTest, SetSpellDamage_ValidValue_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setSpellDamage(60);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getSpellDamage(), 60u);
+}
+
+TEST(MageTest, SetSpellDamage_LowerBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setSpellDamage(MAGE_SPELL_DAMAGE_LOWER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getSpellDamage(), MAGE_SPELL_DAMAGE_LOWER);
+}
+
+TEST(MageTest, SetSpellDamage_UpperBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setSpellDamage(MAGE_SPELL_DAMAGE_UPPER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getSpellDamage(), MAGE_SPELL_DAMAGE_UPPER);
+}
+
+TEST(MageTest, SetSpellDamage_Zero_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setSpellDamage(0);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getSpellDamage(), 30u);
+}
+
+TEST(MageTest, SetSpellDamage_AboveUpper_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setSpellDamage(MAGE_SPELL_DAMAGE_UPPER + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getSpellDamage(), 30u);
+}
+
+
+// ===========================================================================
+// setManaCost()
+// ===========================================================================
+
+TEST(MageTest, SetManaCost_ValidValue_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setManaCost(25);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getManaCost(), 25u);
+}
+
+TEST(MageTest, SetManaCost_LowerBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setManaCost(MAGE_MANA_COST_LOWER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getManaCost(), MAGE_MANA_COST_LOWER);
+}
+
+TEST(MageTest, SetManaCost_UpperBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setManaCost(MAGE_MANA_COST_UPPER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getManaCost(), MAGE_MANA_COST_UPPER);
+}
+
+TEST(MageTest, SetManaCost_AboveUpper_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setManaCost(MAGE_MANA_COST_UPPER + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getManaCost(), 10u);
+}
+
+
+// ===========================================================================
+// setFallbackDamage()
+// ===========================================================================
+
+TEST(MageTest, SetFallbackDamage_ValidValue_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setFallbackDamage(15);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getFallbackDamage(), 15u);
+}
+
+TEST(MageTest, SetFallbackDamage_LowerBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setFallbackDamage(MAGE_FALLBACK_DAMAGE_LOWER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getFallbackDamage(), MAGE_FALLBACK_DAMAGE_LOWER);
+}
+
+TEST(MageTest, SetFallbackDamage_UpperBound_ReturnsTrueAndUpdates)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setFallbackDamage(MAGE_FALLBACK_DAMAGE_UPPER);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(m.getFallbackDamage(), MAGE_FALLBACK_DAMAGE_UPPER);
+}
+
+TEST(MageTest, SetFallbackDamage_Zero_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setFallbackDamage(0);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getFallbackDamage(), 5u);
+}
+
+TEST(MageTest, SetFallbackDamage_AboveUpper_ReturnsFalseAndDoesNotChange)
+{
+    // Arrange
+    Mage m(1, "Luna", 80, "MAGE", 50, 30, 10, 5);
+    // Act
+    bool result = m.setFallbackDamage(MAGE_FALLBACK_DAMAGE_UPPER + 1);
+    // Assert
+    EXPECT_FALSE(result);
+    EXPECT_EQ(m.getFallbackDamage(), 5u);
+}

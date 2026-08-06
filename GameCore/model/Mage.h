@@ -1,6 +1,15 @@
 #pragma once
 #include "Character.h"
 
+const unsigned int MAGE_MANA_UPPER = 500;
+const unsigned int MAGE_MANA_LOWER = 1;
+const unsigned int MAGE_SPELL_DAMAGE_UPPER = 500;
+const unsigned int MAGE_SPELL_DAMAGE_LOWER = 1;
+const unsigned int MAGE_MANA_COST_UPPER = 500;
+const unsigned int MAGE_MANA_COST_LOWER = 0;
+const unsigned int MAGE_FALLBACK_DAMAGE_UPPER = 500;
+const unsigned int MAGE_FALLBACK_DAMAGE_LOWER = 1;
+
 class Mage : public Character
 {
 private:
@@ -15,4 +24,8 @@ public:
 	unsigned int getSpellDamage() const { return spellDamage; }
 	unsigned int getManaCost() const { return manaCost; }
 	unsigned int getFallbackDamage() const { return fallbackDamage; }
+	bool setMaxMana(unsigned int newMaxMana);
+	bool setSpellDamage(unsigned int newSpellDamage);
+	bool setManaCost(unsigned int newManaCost);
+	bool setFallbackDamage(unsigned int newFallbackDamage);
 };
