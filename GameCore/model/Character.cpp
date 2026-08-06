@@ -50,7 +50,7 @@ void Character::reduceHp(unsigned int amount)
 {
 	if (amount >= maxHp) {
 		maxHp = 0;
-	} 
+	}
 	else {
 		maxHp -= amount;
 	}

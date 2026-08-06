@@ -89,32 +89,29 @@ bool DataFileManager::loadCharacters(const string& filepath, CharacterRoster& ro
                 cout << "Loi o dong " << lineNum << " trong file " << filepath << ": WARRIOR can dung 5 truong (WARRIOR|id|name|maxHp|attackPower). Bo qua dong." << endl;
                 continue;
             }
-
-            int id, maxHp, attackPower;
-            if (!tryParsePositiveInt(tokens[1], id)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": id khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            string name = tokens[2];
-            if (name.empty()) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Ten nhan vat khong duoc de trong. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParsePositiveInt(tokens[3], maxHp)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxHp khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParsePositiveInt(tokens[4], attackPower)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": attackPower khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            auto warrior = make_unique<Warrior>(id, name, static_cast<unsigned int>(maxHp), "WARRIOR", attackPower);
-            if (roster.add(move(warrior)) == -1) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Khong the them Warrior vao Roster (co the trung ID). Bo qua dong." << endl;
+            {
+                int id, maxHp, attackPower;
+                if (!tryParsePositiveInt(tokens[1], id)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": id khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                string name = tokens[2];
+                if (name.empty()) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Ten nhan vat khong duoc de trong. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParsePositiveInt(tokens[3], maxHp)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxHp khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParsePositiveInt(tokens[4], attackPower)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": attackPower khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                auto warrior = make_unique<Warrior>(id, name, static_cast<unsigned int>(maxHp), "WARRIOR", attackPower);
+                if (roster.add(move(warrior)) == -1) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Khong the them Warrior vao Roster (co the trung ID). Bo qua dong." << endl;
+                }
             }
         }
         else if (type == "MAGE") {
@@ -123,49 +120,43 @@ bool DataFileManager::loadCharacters(const string& filepath, CharacterRoster& ro
                 cout << "Loi o dong " << lineNum << " trong file " << filepath << ": MAGE can dung 8 truong (MAGE|id|name|maxHp|maxMana|spellDamage|manaCost|fallbackDamage). Bo qua dong." << endl;
                 continue;
             }
-
-            int id, maxHp, maxMana, spellDamage, manaCost, fallbackDamage;
-            if (!tryParsePositiveInt(tokens[1], id)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": id khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            string name = tokens[2];
-            if (name.empty()) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Ten nhan vat khong duoc de trong. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParsePositiveInt(tokens[3], maxHp)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxHp khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParseNonNegativeInt(tokens[4], maxMana)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxMana khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParseNonNegativeInt(tokens[5], spellDamage)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": spellDamage khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParseNonNegativeInt(tokens[6], manaCost)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": manaCost khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            if (!tryParseNonNegativeInt(tokens[7], fallbackDamage)) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": fallbackDamage khong hop le. Bo qua dong." << endl;
-                continue;
-            }
-
-            auto mage = make_unique<Mage>(id, name, static_cast<unsigned int>(maxHp), "MAGE",
-                static_cast<unsigned int>(maxMana), static_cast<unsigned int>(spellDamage),
-                static_cast<unsigned int>(manaCost), static_cast<unsigned int>(fallbackDamage));
-            if (roster.add(move(mage)) == -1) {
-                cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Khong the them Mage vao Roster (co the trung ID). Bo qua dong." << endl;
+            {
+                int id, maxHp, maxMana, spellDamage, manaCost, fallbackDamage;
+                if (!tryParsePositiveInt(tokens[1], id)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": id khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                string name = tokens[2];
+                if (name.empty()) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Ten nhan vat khong duoc de trong. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParsePositiveInt(tokens[3], maxHp)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxHp khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParseNonNegativeInt(tokens[4], maxMana)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": maxMana khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParseNonNegativeInt(tokens[5], spellDamage)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": spellDamage khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParseNonNegativeInt(tokens[6], manaCost)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": manaCost khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                if (!tryParseNonNegativeInt(tokens[7], fallbackDamage)) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": fallbackDamage khong hop le. Bo qua dong." << endl;
+                    continue;
+                }
+                auto mage = make_unique<Mage>(id, name, static_cast<unsigned int>(maxHp), "MAGE",
+                    static_cast<unsigned int>(maxMana), static_cast<unsigned int>(spellDamage),
+                    static_cast<unsigned int>(manaCost), static_cast<unsigned int>(fallbackDamage));
+                if (roster.add(move(mage)) == -1) {
+                    cout << "Loi o dong " << lineNum << " trong file " << filepath << ": Khong the them Mage vao Roster (co the trung ID). Bo qua dong." << endl;
+                }
             }
         }
         else {

@@ -1,26 +1,16 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
+#include "CombatantSlot.h"   // tách riêng để tránh circular dependency
 #include "Character.h"
 #include "Team.h"
 #include "../manager/CharacterRoster.h"
 #include <string>
 
 enum class BattleState {
-    READY,       
-    IN_PROGRESS, 
-    FINISHED     
-};
-
-struct CombatantSlot {
-    int  characterId;   
-    int  currentHp;
-    int  currentMana;   
-
-    CombatantSlot();
-    CombatantSlot(int id, int hp, int mana);
-
-    bool isAlive() const;
+    READY,
+    IN_PROGRESS,
+    FINISHED
 };
 
 static const int MAX_TEAM_SIZE = 5;

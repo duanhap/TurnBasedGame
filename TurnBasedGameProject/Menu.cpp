@@ -432,53 +432,55 @@ void Menu::doSelectTeams() {
 
 void Menu::doStartBattle() {
     std::cout << "\n-- Bat dau tran dau --\n";
-    //bool ok = m_battleEngine.startBattle();
-    //if (ok) {
-    //    std::cout << "[OK] Tran dau bat dau! Trang thai: IN_PROGRESS\n";
-    //    doPrintBattleStatus();
-    //}
-    //else {
-    //    std::cout << "[LOI] Chua chon du hai Team hoac tran dau da dang dien ra.\n";
-    //}
+    bool ok = m_battleEngine.startBattle();
+    if (ok) {
+        std::cout << "[OK] Tran dau bat dau! Trang thai: IN_PROGRESS\n";
+        doPrintBattleStatus();
+    }
+    else {
+        std::cout << "[LOI] Chua chon du hai Team hoac tran dau da dang dien ra.\n";
+    }
 }
 
 void Menu::doPerformAction() {
     // BattleEngine tự xác định actor hiện tại và yêu cầu chọn target
-    //if (!m_battleEngine.isInProgress()) {
-    //    std::cout << "[LOI] Tran dau chua bat dau hoac da ket thuc (TC-15).\n";
-    //    return;
-    //}
+    if (!m_battleEngine.isInProgress()) {
+        std::cout << "[LOI] Tran dau chua bat dau hoac da ket thuc (TC-15).\n";
+        return;
+    }
 
     // Hiển thị trạng thái trước khi hành động
     doPrintBattleStatus();
 
-    // BattleEngine cho biết nhân vật đang đến lượt
-    //const Character* actor = m_battleEngine.getCurrentActor();
-    //if (actor == nullptr) {
-    //    std::cout << "[LOI] Khong co nhan vat nao den luot.\n";
-    //    return;
-    //}
-    //std::cout << "\nDen luot: [" << actor->getId() << "] " << actor->getName() << "\n";
+    //BattleEngine cho biết nhân vật đang đến lượt
+    const Character* actor = m_battleEngine.getCurrentActor();
+    if (actor == nullptr) {
+        std::cout << "[LOI] Khong co nhan vat nao den luot.\n";
+        return;
+    }
+    std::cout << "\nDen luot: [" << actor->getId() << "] " << actor->getName() << "\n";
 
-    //// Hiển thị danh sách đối thủ còn sống để chọn target
-    //std::cout << "Chon ID nhan vat doi thu (con song) de tan cong: ";
-    //int targetId = readInt("", 1, std::numeric_limits<int>::max());
+    // Hiển thị danh sách đối thủ còn sống để chọn target
+    std::cout << "Chon ID nhan vat doi thu (con song) de tan cong: ";
+    int targetId = readInt("", 1, std::numeric_limits<int>::max());
 
-    //bool ok = m_battleEngine.performCurrentAction(targetId);
-    //if (ok) {
-    //    std::cout << "[OK] Hanh dong thanh cong.\n";
-    //    doPrintBattleStatus();
+    bool ok = m_battleEngine.performCurrentAction(targetId);
+    if (ok) {
+        std::cout << "[OK] Hanh dong thanh cong.\n";
+        doPrintBattleStatus();
 
-    //    // Kiểm tra kết thúc trận
-    //    if (m_battleEngine.isFinished()) {
-    //        const Team* winner = m_battleEngine.getWinner();
-    //        std::cout << "\n*** TRAN DAU KET THUC! ***\n";
-    //        std::cout << "*** DOI THANG: " << winner->getName() << " ***\n";
-    //    }
-    //}
-    //else {
-    //    std::cout << "[LOI] Hanh dong khong hop le (sai luot, target het HP, hoac target khong ton tai).\n";
-    //}
+        // Kiểm tra kết thúc trận
+        if (m_battleEngine.isFinished()) {
+            const std::string* nameTeamWin = m_battleEngine.getWinnerName();
+            if (nameTeamWin != nullptr) {
+                std::cout << "\n*** TRAN DAU KET THUC! ***\n";
+                std::cout << "*** DOI THANG: " << *nameTeamWin << " ***\n";
+            }
+        }
+    }
+    else {
+        std::cout << "[LOI] Hanh dong khong hop le (sai luot, target het HP, hoac target khong ton tai).\n";
+    }
 }
 
 void Menu::doPrintBattleStatus() const {
