@@ -6,6 +6,13 @@
 #include <limits>
 #include <string>
 #include <memory>
+#include <thread>
+#include <chrono>
+/*
+Contributors: Nguyen Dinh Dung, 
+Last modified: 2026-08-07
+*/
+static const int LOADING_DELAY_MS = 500;
 
 
 Menu::Menu(CharacterRoster& roster,
@@ -24,10 +31,11 @@ void Menu::run() {
         showMainMenu();
         int choice = readInt("Chon: ", 1, 4);
         switch (choice) {
-        case 1: handleRosterMenu(); break;
-        case 2: handleTeamMenu();   break;
-        case 3: handleBattleMenu(); break;
+        case 1: clearScreenWithLoading(); handleRosterMenu(); break;
+        case 2: clearScreenWithLoading(); handleTeamMenu();   break;
+        case 3: clearScreenWithLoading(); handleBattleMenu(); break;
         case 4:
+            clearScreenWithLoading();
             handleSaveExit();
             running = false;
             break;
@@ -79,12 +87,12 @@ void Menu::handleRosterMenu() {
         showRosterMenu();
         int choice = readInt("Chon: ", 0, 5);
         switch (choice) {
-        case 1: doListCharacters(); break;
-        case 2: doAddCharacter();   break;
-        case 3: doEditCharacter();  break;
-        case 4: doDeleteCharacter(); break;
-        case 5: doFindCharacter();  break;
-        case 0: back = true;        break;
+        case 1: clearScreenWithLoading(); doListCharacters(); break;
+        case 2: clearScreenWithLoading(); doAddCharacter();   break;
+        case 3: clearScreenWithLoading(); doEditCharacter();  break;
+        case 4: clearScreenWithLoading(); doDeleteCharacter(); break;
+        case 5: clearScreenWithLoading(); doFindCharacter();  break;
+        case 0: clearScreenWithLoading(); back = true;        break;
         }
     }
 }
@@ -235,13 +243,13 @@ void Menu::handleTeamMenu() {
         showTeamMenu();
         int choice = readInt("Chon: ", 0, 6);
         switch (choice) {
-        case 1: doListTeams();               break;
-        case 2: doCreateTeam();              break;
-        case 3: doRenameTeam();              break;
-        case 4: doDeleteTeam();              break;
-        case 5: doAddCharacterToTeam();      break;
-        case 6: doRemoveCharacterFromTeam(); break;
-        case 0: back = true;                 break;
+        case 1: clearScreenWithLoading(); doListTeams();               break;
+        case 2: clearScreenWithLoading(); doCreateTeam();              break;
+        case 3: clearScreenWithLoading(); doRenameTeam();              break;
+        case 4: clearScreenWithLoading(); doDeleteTeam();              break;
+        case 5: clearScreenWithLoading(); doAddCharacterToTeam();      break;
+        case 6: clearScreenWithLoading(); doRemoveCharacterFromTeam(); break;
+        case 0: clearScreenWithLoading(); back = true;                 break;
         }
     }
 }
@@ -343,11 +351,11 @@ void Menu::handleBattleMenu() {
         showBattleMenu();
         int choice = readInt("Chon: ", 0, 4);
         switch (choice) {
-        case 1: doSelectTeams();      break;
-        case 2: doStartBattle();      break;
-        case 3: doPerformAction();    break;
-        case 4: doPrintBattleStatus(); break;
-        case 0: back = true;          break;
+        case 1: clearScreenWithLoading(); doSelectTeams();      break;
+        case 2: clearScreenWithLoading(); doStartBattle();      break;
+        case 3: clearScreenWithLoading(); doPerformAction();    break;
+        case 4: clearScreenWithLoading(); doPrintBattleStatus(); break;
+        case 0: clearScreenWithLoading(); back = true;          break;
         }
     }
 }
@@ -498,5 +506,22 @@ void Menu::clearInputStream() const {
         std::cin.clear();
     }
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+void Menu::clearScreenWithLoading() const {
+    const int dotCount = 3;
+    const int delayPerDot = LOADING_DELAY_MS / dotCount;
+
+    std::cout << "Loading";
+    std::cout.flush();
+
+    for (int i = 0; i < dotCount; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(delayPerDot));
+        std::cout << ".";
+        std::cout.flush();
+    }
+
+    // Clear screen and reset cursor
+    std::cout << "\033[2J\033[1;1H";
 }
 

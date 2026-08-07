@@ -70,6 +70,9 @@ private:
 
     // Xóa trạng thái lỗi và ký tự thừa của cin
     void clearInputStream() const;
+
+    // Hiển thị "..." loading rồi xóa màn hình
+    void clearScreenWithLoading() const;
 };
 
 #endif // MENU_H
