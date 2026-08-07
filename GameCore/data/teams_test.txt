@@ -1,0 +1,31 @@
+# Dinh dang du lieu Doi hinh (teams.txt)
+# teamId|teamName|characterId1,characterId2,...
+
+# --- DOI HINH HOP LE (VALID TEAMS) ---
+201|Red Team|101
+202|Blue Team|102
+10|Alliance Team|1,4,5
+20|Horde Team|2,3,6
+
+
+# --- DOI HINH SAI DINH DANG DE TEST/DEMO (MALFORMED TEAMS) ---
+# 1. Thieu truong teamName hoac teamId
+30
+
+# 2. teamId khong hop le (Chu thay vi so)
+abc|InvalidIDTeam|1,2
+
+# 3. Ten Team bi de trong
+40||1,2
+
+# 4. teamId bi trung voi teamId 10 da co o tren
+10|DuplicateIDTeam|2,3
+
+# 5. Ten Team bi trung voi "Horde Team" da co o tren
+50|Horde Team|3,4
+
+# 6. ID nhan vat khong hop le (Chu thay vi so)
+60|BadCharIDTeam|1,xyz,2
+
+# 7. ID nhan vat 99 khong ton tai trong roster
+70|NonExistentCharTeam|1,99,2

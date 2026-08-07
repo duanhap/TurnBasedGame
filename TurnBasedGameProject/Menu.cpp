@@ -59,11 +59,13 @@ void Menu::showMainMenu() const {
 
 void Menu::handleSaveExit() {
     std::cout << "\n[*] Dang luu du lieu...\n";
-    bool ok = DataFileManager::saveTeams("data/teams.txt", m_teamManager);
-    if (ok) {
+    bool okChar = DataFileManager::saveCharacters("data/characters.txt", m_roster);
+    bool okTeam = DataFileManager::saveTeams("data/teams.txt", m_teamManager);
+    if (okChar && okTeam) {
         std::cout << "[OK] Da luu. Tam biet!\n";
     } else {
-        std::cout << "[LOI] Khong the luu file. Kiem tra quyen truy cap.\n";
+        if (!okChar) std::cout << "[LOI] Khong the luu characters.txt. Kiem tra quyen truy cap.\n";
+        if (!okTeam) std::cout << "[LOI] Khong the luu teams.txt. Kiem tra quyen truy cap.\n";
     }
 }
 
@@ -160,18 +162,20 @@ void Menu::doEditCharacter() {
     int newMaxHp = readInt("maxHp moi (> 0): ", 1, std::numeric_limits<int>::max());
 
     bool ok = false;
-    // Phân nhánh theo loại để nhập đúng chỉ số — việc quyết định loại chỉ xảy ra tại đây (UI)
-    //if (ch->getType() == CharacterType::WARRIOR) {
-    //    int attackPower = readInt("attackPower moi (> 0): ", 1, std::numeric_limits<int>::max());
-    //    ok = m_roster.updateWarrior(id, newName, newMaxHp, attackPower);
-    //}
-    //else {
-    //    int maxMana = readInt("maxMana moi (> 0): ", 1, std::numeric_limits<int>::max());
-    //    int spellDamage = readInt("spellDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
-    //    int manaCost = readInt("manaCost moi (> 0): ", 1, std::numeric_limits<int>::max());
-    //    int fallbackDamage = readInt("fallbackDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
-    //    ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
-    //}
+  
+    if (ch->getType() == "WARRIOR") {
+        int attackPower = readInt("attackPower moi (> 0): ", 1, std::numeric_limits<int>::max());
+        ok = m_roster.updateWarrior(id, newName, newMaxHp, attackPower);
+
+    }
+    else {
+        int maxMana = readInt("maxMana moi (> 0): ", 1, std::numeric_limits<int>::max());
+        int spellDamage = readInt("spellDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
+        int manaCost = readInt("manaCost moi (> 0): ", 1, std::numeric_limits<int>::max());
+        int fallbackDamage = readInt("fallbackDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
+        ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
+       
+    }
 
     if (ok) {
         std::cout << "[OK] Da cap nhat nhan vat ID = " << id << "\n";
@@ -215,10 +219,16 @@ void Menu::doFindCharacter() const {
     else {
         std::string keyword;
         readNonEmptyString("Nhap mot phan ten: ", keyword);
-        //int found = m_roster.findByName(keyword); // trả về số kết quả và tự in
-        //if (found == 0) {
-        //    std::cout << "[THONG BAO] Khong co nhan vat phu hop voi tu khoa \"" << keyword << "\"\n";
-        //}
+        const std::vector<Character*> found = m_roster.findByName(keyword); // trả về số kết quả và tự in
+        if (found.size()  == 0) {
+            std::cout << "[THONG BAO] Khong co nhan vat phu hop voi tu khoa \"" << keyword << "\"\n";
+        }
+        else {
+            std::cout << "[THONG BAO] Tim thay " << found.size() << " nhan vat phu hop voi tu khoa \"" << keyword << "\":\n";
+            for (const Character* ch : found) {
+                ch->display();
+			}
+        }
     }
 }
 

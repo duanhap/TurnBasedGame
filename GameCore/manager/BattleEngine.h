@@ -34,6 +34,7 @@ private:
     bool findSlot(int characterId, int& outSide, int& outIndex) const;
     //bool getCurrentActorSlot(int& outSide, int& outIndex) const;
     void advanceToNextActor();
+    void advanceCursorForSide(int side); // advance cursor riêng của một bên
     bool isValidTarget(int targetId, int actorSide) const;
 };
 

@@ -50,11 +50,18 @@ public:
     int  getTurnNumber() const;
     void incrementTurn();
 
-    
     int  getCurrentSide()  const;
     int  getCurrentIndex() const;
     void setCurrentSide(int side);
-    void setCurrentIndex(int idx);
+
+    // Cursor riêng cho từng bên — mỗi bên tự advance độc lập
+    int  getCursorA() const;
+    int  getCursorB() const;
+    void setCursorA(int idx);
+    void setCursorB(int idx);
+
+    // getCurrentIndex() trả cursor của bên đang đến lượt
+    //int  getCurrentIndex() const;
 
     bool isSetup() const;
 
@@ -73,10 +80,10 @@ private:
     int           m_sizeA;
     int           m_sizeB;
 
-    int  m_turnNumber;    // lượt tổng (bắt đầu từ 1)
-    int  m_currentSide;   // 0 = A, 1 = B
-    int  m_currentIndex;  // chỉ số nhân vật trong bên đang đến lượt
-
+    int  m_turnNumber;
+    int  m_currentSide;   // 0 = A, 1 = B đang đến lượt
+    int  m_cursorA;       // cursor riêng bên A (index NV sẽ hành động tiếp theo)
+    int  m_cursorB;       // cursor riêng bên B
     bool m_isSetup;
 };
 
