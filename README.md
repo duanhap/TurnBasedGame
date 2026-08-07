@@ -16,37 +16,56 @@ Dự án được build và chạy **duy nhất bằng Visual Studio** (không c
 
 ---
 
-## 📁 Cấu trúc Thư mục Dự án (hiện tại)
+## 📁 Cấu trúc Thư mục Dự án
 
 ```text
 TurnBasedGame/                          # Thư mục gốc — mở TurnBasedGame.sln đầu tiên
 ├── TurnBasedGame.sln                   # File solution
 │
 ├── GameCore/                           # [Static Library project] Toàn bộ logic lõi (domain/model) của game
-│   ├── data/                           # Dữ liệu mẫu (characters.txt, teams.txt, ...)
-│   ├── model/                          # Các class: Character, Warrior, Mage, Team, Battle, ...
+│   ├── data/                           # Dữ liệu mẫu
+│   │   ├── characters.txt              # Danh sách nhân vật (Warrior/Mage)
+│   │   └── teams.txt                   # Danh sách các đội hình
+│   ├── model/                          # Các lớp đối tượng nghiệp vụ
+│   │   ├── Character.h / .cpp          # Lớp cơ sở trừu tượng Character
+│   │   ├── Warrior.h / .cpp            # Lớp nhân vật Chiến binh
+│   │   ├── Mage.h / .cpp               # Lớp nhân vật Pháp sư
+│   │   ├── Team.h / .cpp               # Lớp quản lý Đội hình đơn lẻ
+│   │   ├── CombatantSlot.h / .cpp      # Vị trí chiến đấu trong trận
+│   │   └── Battle.h / .cpp             # Trạng thái trận đấu
+│   ├── manager/                        # Các lớp quản lý nghiệp vụ (Use Cases)
+│   │   ├── CharacterRoster.h / .cpp    # Quản lý kho nhân vật (Roster)
+│   │   ├── TeamManager.h / .cpp        # Quản lý danh sách các Đội hình
+│   │   ├── BattleEngine.h / .cpp       # Điều khiển luồng trận đấu
+│   │   └── DataFileManager.h / .cpp    # Đọc và ghi file dữ liệu
 │   ├── framework.h                     # Sinh tự động khi tạo project (Static Library template)
-│   ├── GameCore.cpp                    # Sinh tự động — thường không cần chỉnh sửa
-│   ├── pch.h / pch.cpp                 # Precompiled header — sinh tự động
-│   ├── GameCore.vcxproj
-│   └── GameCore.vcxproj.filters
+│   ├── GameCore.cpp                    # Sinh tự động
+│   └── pch.h / pch.cpp                 # Precompiled header — sinh tự động
 │
 ├── TurnBasedGameProject/               # [Console Application] Executable chính — Startup Project
-│   └── TurnBasedGameProject.cpp        # main(), vòng lặp game (game loop), menu console
+│   ├── data/                           # Bản sao thư mục dữ liệu mẫu chạy cục bộ/VS debug
+│   │   ├── characters.txt
+│   │   └── teams.txt
+│   ├── Menu.h / Menu.cpp               # Logic điều phối giao diện Console UI & xử lý nhập liệu
+│   └── TurnBasedGameProject.cpp        # main(), khởi tạo game loop
 │
 ├── TurnBasedGameTestProject/           # [Google Test Project] Unit test cho GameCore
-│   ├── test.cpp                        # Viết các TEST() / TEST_F() tại đây
+│   ├── CharacterRosterTest.cpp         # Test cho CharacterRoster
+│   ├── DataFileManagerTest.cpp         # Test cho DataFileManager
+│   ├── MageTest.cpp                    # Test cho Mage
+│   ├── TeamManagerTest.cpp             # Test cho TeamManager
+│   ├── WarriorTest.cpp                 # Test cho Warrior
+│   ├── test.cpp                        # Entry point của Google Test
 │   ├── packages.config                 # Khai báo gói NuGet Google Test
 │   └── pch.h / pch.cpp                 # Sinh tự động bởi template Google Test
 │
-├── packages/                           # Thư mục NuGet tự sinh khi restore — KHÔNG sửa tay, KHÔNG commit
+├── packages/                           # Thư mục NuGet tự sinh khi restore
 ├── .gitignore
 ├── .gitattributes
-├── code_workflow.md                    # Quy trình làm việc nhóm (branch, commit, PR, ...)
+├── code_workflow.md                    # Quy trình làm việc nhóm
+├── console_input_test_cases.md         # Bộ test case kiểm thử input trên Console
 └── README.md
 ```
-
-> **Lưu ý**: `data/` và `model/` hiện đang thu gọn trong Solution Explorer nên README này chưa liệt kê chi tiết từng file bên trong — xem phần "Cần xác nhận thêm" ở cuối file.
 
 ---
 ## 🏛️ Kiến trúc Hệ thống
@@ -114,6 +133,62 @@ graph TD
 | DataFileManager | File system | Đọc / ghi `.txt` |
 
 ---
+
+## 💾 Định Dạng File Dữ Liệu
+Hệ thống sử dụng các tệp văn bản dạng ngăn cách bằng ký tự pipe (`|`) để lưu trữ dữ liệu bền vững. Các dòng bắt đầu bằng dấu `#` được coi là chú thích và sẽ bị bỏ qua khi tải dữ liệu.
+
+### 1. File dữ liệu nhân vật (`characters.txt`)
+Hỗ trợ hai loại nhân vật với cấu trúc định dạng như sau:
+* **Warrior (Chiến binh):**
+  ```text
+  WARRIOR|id|name|maxHp|attackPower
+  ```
+  *Ví dụ:* `WARRIOR|1|Arthur|150|25`
+* **Mage (Pháp sư):**
+  ```text
+  MAGE|id|name|maxHp|maxMana|spellDamage|manaCost|fallbackDamage
+  ```
+  *Ví dụ:* `MAGE|4|Gandalf|100|80|50|15|10`
+
+### 2. File dữ liệu đội hình (`teams.txt`)
+Quản lý danh sách các thành viên trong đội bằng cách tham chiếu danh sách ID nhân vật ngăn cách bằng dấu phẩy:
+```text
+teamId|teamName|characterId1,characterId2,...
+```
+*Ví dụ:* `10|Alliance Team|1,4,5`
+
+---
+
+## 📏 Giới Hạn & Ràng Buộc Thiết Kế
+Nhằm đảm bảo cân bằng game và độ ổn định hệ thống, các ràng buộc sau được áp dụng chặt chẽ ở cả tầng UI và tầng Nghiệp vụ:
+* **Giới hạn Đội hình (Team):**
+  * Số lượng Đội hình tối đa trong hệ thống: **10** (được định nghĩa trong `TeamManager`).
+  * Số lượng thành viên tối đa trong mỗi Đội hình: **5** (được định nghĩa trong `Team`).
+  * Tên đội hình và ID đội hình không được trùng lặp.
+* **Giới hạn Nhân vật (Character):**
+  * ID nhân vật là số nguyên dương và phải là duy nhất trong toàn bộ kho nhân vật.
+  * Tên nhân vật không được rỗng (sau khi đã cắt bỏ khoảng trắng).
+  * Giới hạn HP tối đa của nhân vật: từ **1** đến **500** (`CHARACTER_MAX_HP_LOWER` và `CHARACTER_MAX_HP_UPPER`).
+* **Ràng buộc Trận đấu (Battle):**
+  * Chỉ ghép trận khi hai đội tồn tại, khác nhau hoàn toàn.
+  * Mỗi đội tham chiến phải có ít nhất 1 nhân vật (đội không được rỗng).
+  * Không cho phép trùng lặp nhân vật giữa hai đội tham chiến để tránh lỗi xung đột trạng thái.
+
+---
+
+## 🎯 Danh Sách Tính Năng Đã Hoàn Thành
+Hệ thống đã triển khai đầy đủ các yêu cầu chức năng cốt lõi theo mô hình 3 lớp:
+1. **Quản lý Nhân vật (Character Roster):** CRUD nhân vật, tìm kiếm nhân vật theo ID hoặc tên (không phân biệt chữ hoa/thường).
+2. **Quản lý Đội hình (Team Manager):** CRUD đội hình, đổi tên đội hình, thêm/xóa thành viên. Tự động xóa nhân vật khỏi tất cả các đội hình nếu nhân vật đó bị xóa khỏi Roster (cascade delete).
+3. **Động cơ Trận đấu (Battle Engine):** Ghép đội, bắt đầu trận, lượt đấu luân phiên đa hình (Warrior đánh cận chiến, Mage dùng phép thuật hoặc tự động đánh thường dự phòng khi hết mana), xác định đội chiến thắng.
+4. **Quản lý Tệp Dữ liệu (Data File Manager):** Tải và lưu trữ dữ liệu nhân vật/đội hình từ file `.txt`. Có cơ chế bỏ qua các dòng dữ liệu lỗi định dạng và ghi log chi tiết lý do lỗi ra console mà không làm dừng chương trình.
+5. **Giao Diện Console UI Hướng Người Dùng:**
+   * Tiện ích chống crash: Tự động xóa cờ lỗi, dọn hàng đợi dữ liệu khi người dùng nhập sai định dạng hoặc số quá lớn.
+   * Xử lý tín hiệu thoát: Phát hiện tổ hợp phím EOF (`Ctrl + Z`) để lưu dữ liệu và thoát game an toàn.
+   * Đầy đủ bộ tài liệu kiểm thử input: [console_input_test_cases.md](file:///d:/FPT/Mock/TurnBasedGame/console_input_test_cases.md).
+
+---
+
 ## 🧩 Nơi đặt code (quan trọng nhất)
 
 | Bạn cần viết...                                                            | Đặt vào project nào |
