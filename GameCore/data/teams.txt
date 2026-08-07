@@ -2,8 +2,11 @@
 # teamId|teamName|characterId1,characterId2,...
 
 # --- DOI HINH HOP LE (VALID TEAMS) ---
+201|Red Team|101
+202|Blue Team|102
 10|Alliance Team|1,4,5
 20|Horde Team|2,3,6
+
 
 # --- DOI HINH SAI DINH DANG DE TEST/DEMO (MALFORMED TEAMS) ---
 # 1. Thieu truong teamName hoac teamId

@@ -6,6 +6,13 @@
 #include <limits>
 #include <string>
 #include <memory>
+#include <thread>
+#include <chrono>
+/*
+Contributors: Nguyen Dinh Dung, 
+Last modified: 2026-08-07
+*/
+static const int LOADING_DELAY_MS = 500;
 
 
 Menu::Menu(CharacterRoster& roster,
@@ -24,10 +31,11 @@ void Menu::run() {
         showMainMenu();
         int choice = readInt("Chon: ", 1, 4);
         switch (choice) {
-        case 1: handleRosterMenu(); break;
-        case 2: handleTeamMenu();   break;
-        case 3: handleBattleMenu(); break;
+        case 1: clearScreenWithLoading(); handleRosterMenu(); break;
+        case 2: clearScreenWithLoading(); handleTeamMenu();   break;
+        case 3: clearScreenWithLoading(); handleBattleMenu(); break;
         case 4:
+            clearScreenWithLoading();
             handleSaveExit();
             running = false;
             break;
@@ -79,12 +87,12 @@ void Menu::handleRosterMenu() {
         showRosterMenu();
         int choice = readInt("Chon: ", 0, 5);
         switch (choice) {
-        case 1: doListCharacters(); break;
-        case 2: doAddCharacter();   break;
-        case 3: doEditCharacter();  break;
-        case 4: doDeleteCharacter(); break;
-        case 5: doFindCharacter();  break;
-        case 0: back = true;        break;
+        case 1: clearScreenWithLoading(); doListCharacters(); break;
+        case 2: clearScreenWithLoading(); doAddCharacter();   break;
+        case 3: clearScreenWithLoading(); doEditCharacter();  break;
+        case 4: clearScreenWithLoading(); doDeleteCharacter(); break;
+        case 5: clearScreenWithLoading(); doFindCharacter();  break;
+        case 0: clearScreenWithLoading(); back = true;        break;
         }
     }
 }
@@ -235,13 +243,13 @@ void Menu::handleTeamMenu() {
         showTeamMenu();
         int choice = readInt("Chon: ", 0, 6);
         switch (choice) {
-        case 1: doListTeams();               break;
-        case 2: doCreateTeam();              break;
-        case 3: doRenameTeam();              break;
-        case 4: doDeleteTeam();              break;
-        case 5: doAddCharacterToTeam();      break;
-        case 6: doRemoveCharacterFromTeam(); break;
-        case 0: back = true;                 break;
+        case 1: clearScreenWithLoading(); doListTeams();               break;
+        case 2: clearScreenWithLoading(); doCreateTeam();              break;
+        case 3: clearScreenWithLoading(); doRenameTeam();              break;
+        case 4: clearScreenWithLoading(); doDeleteTeam();              break;
+        case 5: clearScreenWithLoading(); doAddCharacterToTeam();      break;
+        case 6: clearScreenWithLoading(); doRemoveCharacterFromTeam(); break;
+        case 0: clearScreenWithLoading(); back = true;                 break;
         }
     }
 }
@@ -343,11 +351,11 @@ void Menu::handleBattleMenu() {
         showBattleMenu();
         int choice = readInt("Chon: ", 0, 4);
         switch (choice) {
-        case 1: doSelectTeams();      break;
-        case 2: doStartBattle();      break;
-        case 3: doPerformAction();    break;
-        case 4: doPrintBattleStatus(); break;
-        case 0: back = true;          break;
+        case 1: clearScreenWithLoading(); doSelectTeams();      break;
+        case 2: clearScreenWithLoading(); doStartBattle();      break;
+        case 3: clearScreenWithLoading(); doPerformAction();    break;
+        case 4: clearScreenWithLoading(); doPrintBattleStatus(); break;
+        case 0: clearScreenWithLoading(); back = true;          break;
         }
     }
 }
@@ -387,52 +395,55 @@ void Menu::doSelectTeams() {
 
 void Menu::doStartBattle() {
     std::cout << "\n-- Bat dau tran dau --\n";
-    //bool ok = m_battleEngine.startBattle();
-    //if (ok) {
-    //    std::cout << "[OK] Tran dau bat dau! Trang thai: IN_PROGRESS\n";
-    //    doPrintBattleStatus();
-    //}
-    //else {
-    //    std::cout << "[LOI] Chua chon du hai Team hoac tran dau da dang dien ra.\n";
-    //}
+    bool ok = m_battleEngine.startBattle();
+    if (ok) {
+        std::cout << "[OK] Tran dau bat dau! Trang thai: IN_PROGRESS\n";
+        doPrintBattleStatus();
+    }
+    else {
+        std::cout << "[LOI] Chua chon du hai Team hoac tran dau da dang dien ra.\n";
+    }
 }
 
 void Menu::doPerformAction() {
     // BattleEngine tự xác định actor hiện tại và yêu cầu chọn target
-    //if (!m_battleEngine.isInProgress()) {
-    //    std::cout << "[LOI] Tran dau chua bat dau hoac da ket thuc (TC-15).\n";
-    //    return;
-    //}
+    if (!m_battleEngine.isInProgress()) {
+        std::cout << "[LOI] Tran dau chua bat dau hoac da ket thuc (TC-15).\n";
+        return;
+    }
 
     // Hiển thị trạng thái trước khi hành động
     doPrintBattleStatus();
 
-    // BattleEngine cho biết nhân vật đang đến lượt
-    //const Character* actor = m_battleEngine.getCurrentActor();
-    //if (actor == nullptr) {
-    //    std::cout << "[LOI] Khong co nhan vat nao den luot.\n";
-    //    return;
-    //}
-    //std::cout << "\nDen luot: [" << actor->getId() << "] " << actor->getName() << "\n";
+    //BattleEngine cho biết nhân vật đang đến lượt
+    const Character* actor = m_battleEngine.getCurrentActor();
+    if (actor == nullptr) {
+        std::cout << "[LOI] Khong co nhan vat nao den luot.\n";
+        return;
+    }
+    std::cout << "\nDen luot: [" << actor->getId() << "] " << actor->getName() << "\n";
 
-    //// Hiển thị danh sách đối thủ còn sống để chọn target
-    //int targetId = readInt("Chon ID nhan vat doi thu (con song) de tan cong: ", 1, std::numeric_limits<int>::max());
+    // Hiển thị danh sách đối thủ còn sống để chọn target
+    std::cout << "Chon ID nhan vat doi thu (con song) de tan cong: ";
+    int targetId = readInt("", 1, std::numeric_limits<int>::max());
 
-    //bool ok = m_battleEngine.performCurrentAction(targetId);
-    //if (ok) {
-    //    std::cout << "[OK] Hanh dong thanh cong.\n";
-    //    doPrintBattleStatus();
+    bool ok = m_battleEngine.performCurrentAction(targetId);
+    if (ok) {
+        std::cout << "[OK] Hanh dong thanh cong.\n";
+        doPrintBattleStatus();
 
-    //    // Kiểm tra kết thúc trận
-    //    if (m_battleEngine.isFinished()) {
-    //        const Team* winner = m_battleEngine.getWinner();
-    //        std::cout << "\n*** TRAN DAU KET THUC! ***\n";
-    //        std::cout << "*** DOI THANG: " << winner->getName() << " ***\n";
-    //    }
-    //}
-    //else {
-    //    std::cout << "[LOI] Hanh dong khong hop le (sai luot, target het HP, hoac target khong ton tai).\n";
-    //}
+        // Kiểm tra kết thúc trận
+        if (m_battleEngine.isFinished()) {
+            const std::string* nameTeamWin = m_battleEngine.getWinnerName();
+            if (nameTeamWin != nullptr) {
+                std::cout << "\n*** TRAN DAU KET THUC! ***\n";
+                std::cout << "*** DOI THANG: " << *nameTeamWin << " ***\n";
+            }
+        }
+    }
+    else {
+        std::cout << "[LOI] Hanh dong khong hop le (sai luot, target het HP, hoac target khong ton tai).\n";
+    }
 }
 
 void Menu::doPrintBattleStatus() const {
@@ -496,4 +507,21 @@ void Menu::clearInputStream() const {
     }
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
-
+
+void Menu::clearScreenWithLoading() const {
+    const int dotCount = 3;
+    const int delayPerDot = LOADING_DELAY_MS / dotCount;
+
+    std::cout << "Loading";
+    std::cout.flush();
+
+    for (int i = 0; i < dotCount; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(delayPerDot));
+        std::cout << ".";
+        std::cout.flush();
+    }
+
+    // Clear screen and reset cursor
+    std::cout << "\033[2J\033[1;1H";
+}
+

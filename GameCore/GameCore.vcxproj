@@ -150,6 +150,7 @@
     <ClInclude Include="manager\TeamManager.h" />
     <ClInclude Include="model\Battle.h" />
     <ClInclude Include="model\Character.h" />
+    <ClInclude Include="model\CombatantSlot.h" />
     <ClInclude Include="model\Mage.h" />
     <ClInclude Include="model\Team.h" />
     <ClInclude Include="model\Warrior.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="manager\TeamManager.cpp" />
     <ClCompile Include="model\Battle.cpp" />
     <ClCompile Include="model\Character.cpp" />
+    <ClCompile Include="model\CombatantSlot.cpp" />
     <ClCompile Include="model\Mage.cpp" />
     <ClCompile Include="model\Team.cpp" />
     <ClCompile Include="model\Warrior.cpp" />

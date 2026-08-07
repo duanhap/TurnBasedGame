@@ -18,6 +18,7 @@ public:
 
     int getId() const;
     string getName() const;
+    int getSize() const;
     void setName(string name);
     const vector<int>& getCharacterIds() const;
 

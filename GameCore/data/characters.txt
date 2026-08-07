@@ -3,6 +3,8 @@
 # MAGE|id|name|maxHp|maxMana|spellDamage|manaCost|fallbackDamage
 
 # --- NHAN VAT HOP LE (VALID CHARACTERS) ---
+WARRIOR|101|Ares|100|30
+MAGE|102|Luna|80|10|40|10|10
 WARRIOR|1|Arthur|150|25
 WARRIOR|2|Garen|180|20
 WARRIOR|3|Thor|160|35
