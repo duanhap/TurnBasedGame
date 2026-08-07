@@ -11,85 +11,67 @@ Battle::Battle()
     , m_sizeB(0)
     , m_turnNumber(0)
     , m_currentSide(0)
-    , m_currentIndex(0)
+    , m_cursorA(0)
+    , m_cursorB(0)
     , m_isSetup(false)
-{
-}
+{}
 
-// ============================================================
-//  Setup: gán Team và khởi tạo slot
-// ============================================================
 bool Battle::setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster) {
-    if (teamA == nullptr || teamB == nullptr)     return false;
-    if (teamA->getId() == teamB->getId())          return false;  // cùng một Team (TC-06)
-    if (teamA->getSize() == 0 || teamB->getSize() == 0) return false; // Team rỗng (TC-06)
+    if (teamA == nullptr || teamB == nullptr)          return false;
+    if (teamA->getId() == teamB->getId())               return false;
+    if (teamA->getSize() == 0 || teamB->getSize() == 0) return false;
 
-    m_teamAId = teamA->getId();
-    m_teamBId = teamB->getId();
+    m_teamAId   = teamA->getId();
+    m_teamBId   = teamB->getId();
     m_teamAName = teamA->getName();
     m_teamBName = teamB->getName();
 
-    // Điền slot A
     m_sizeA = teamA->getSize();
     for (int i = 0; i < m_sizeA; ++i) {
         int cid = teamA->getCharacterIds()[i];
         const Character* ch = roster.findById(cid);
         if (ch == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
-            --m_sizeA;
-            --i;
-            continue;
+            --m_sizeA; --i; continue;
         }
         m_slotsA[i] = CombatantSlot(cid, ch->getMaxHp(), ch->getMaxMana());
     }
 
-    // Điền slot B
     m_sizeB = teamB->getSize();
     for (int i = 0; i < m_sizeB; ++i) {
         int cid = teamB->getCharacterIds()[i];
         const Character* ch = roster.findById(cid);
         if (ch == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
-            --m_sizeB;
-            --i;
-            continue;
+            --m_sizeB; --i; continue;
         }
         m_slotsB[i] = CombatantSlot(cid, ch->getMaxHp(), ch->getMaxMana());
     }
 
     if (m_sizeA == 0 || m_sizeB == 0) return false;
 
-    m_state = BattleState::READY;
+    m_state      = BattleState::READY;
     m_turnNumber = 0;
     m_currentSide = 0;
-    m_currentIndex = 0;
-    m_isSetup = true;
+    m_cursorA    = 0;   // cả hai bắt đầu từ NV[0]
+    m_cursorB    = 0;
+    m_isSetup    = true;
     return true;
 }
 
-// ============================================================
-//  Reset HP/Mana về max — gọi khi Start  
-// ============================================================
 void Battle::resetCombatants(const CharacterRoster& roster) {
     for (int i = 0; i < m_sizeA; ++i) {
         const Character* ch = roster.findById(m_slotsA[i].characterId);
-        if (ch) {
-            m_slotsA[i].currentHp = ch->getMaxHp();
-            m_slotsA[i].currentMana = ch->getMaxMana();
-        }
+        if (ch) { m_slotsA[i].currentHp = ch->getMaxHp(); m_slotsA[i].currentMana = ch->getMaxMana(); }
     }
     for (int i = 0; i < m_sizeB; ++i) {
         const Character* ch = roster.findById(m_slotsB[i].characterId);
-        if (ch) {
-            m_slotsB[i].currentHp = ch->getMaxHp();
-            m_slotsB[i].currentMana = ch->getMaxMana();
-        }
+        if (ch) { m_slotsB[i].currentHp = ch->getMaxHp(); m_slotsB[i].currentMana = ch->getMaxMana(); }
     }
 }
 
-
-BattleState Battle::getState()      const { return m_state; }
-void        Battle::setState(BattleState s) { m_state = s; }
+BattleState Battle::getState()          const { return m_state; }
+void        Battle::setState(BattleState s)   { m_state = s; }
 
 const std::string& Battle::getTeamAName() const { return m_teamAName; }
 const std::string& Battle::getTeamBName() const { return m_teamBName; }
@@ -108,18 +90,25 @@ const CombatantSlot& Battle::getSlot(int side, int index) const {
 
 bool Battle::hasAlive(int side) const {
     int size = (side == 0) ? m_sizeA : m_sizeB;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i)
         if (getSlot(side, i).isAlive()) return true;
-    }
     return false;
 }
 
 int  Battle::getTurnNumber()  const { return m_turnNumber; }
-void Battle::incrementTurn() { ++m_turnNumber; }
+void Battle::incrementTurn()        { ++m_turnNumber; }
 
 int  Battle::getCurrentSide()  const { return m_currentSide; }
-int  Battle::getCurrentIndex() const { return m_currentIndex; }
-void Battle::setCurrentSide(int s) { m_currentSide = s; }
-void Battle::setCurrentIndex(int i) { m_currentIndex = i; }
+void Battle::setCurrentSide(int s)   { m_currentSide = s; }
+
+// getCurrentIndex trả cursor của bên đang đến lượt
+int Battle::getCurrentIndex() const {
+    return (m_currentSide == 0) ? m_cursorA : m_cursorB;
+}
+
+int  Battle::getCursorA() const { return m_cursorA; }
+int  Battle::getCursorB() const { return m_cursorB; }
+void Battle::setCursorA(int i)  { m_cursorA = i; }
+void Battle::setCursorB(int i)  { m_cursorB = i; }
 
 bool Battle::isSetup() const { return m_isSetup; }
