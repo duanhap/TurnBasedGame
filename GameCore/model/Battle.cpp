@@ -112,3 +112,18 @@ void Battle::setCursorA(int i)  { m_cursorA = i; }
 void Battle::setCursorB(int i)  { m_cursorB = i; }
 
 bool Battle::isSetup() const { return m_isSetup; }
+
+void Battle::reset() {
+    m_state       = BattleState::READY;
+    m_teamAId     = 0;
+    m_teamBId     = 0;
+    m_teamAName.clear();
+    m_teamBName.clear();
+    m_sizeA       = 0;
+    m_sizeB       = 0;
+    m_turnNumber  = 0;
+    m_currentSide = 0;
+    m_cursorA     = 0;
+    m_cursorB     = 0;
+    m_isSetup     = false;
+}

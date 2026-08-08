@@ -27,6 +27,12 @@ public:
 
     void printStatus(const CharacterRoster& roster) const;
 
+    // Reset trận đấu về trạng thái ban đầu (cho phép chơi trận mới)
+    void reset();
+
+    // Getter cho Menu truy cập trạng thái trận đấu để hiển thị
+    const Battle& getBattle() const;
+
 private:
     Battle           m_battle;
     CharacterRoster* m_roster; // non-const để gọi findById() mutable

@@ -206,3 +206,12 @@ void BattleEngine::advanceCursorForSide(int side) {
     }
     // Không còn ai sống — giữ nguyên cursor (battle sẽ FINISHED)
 }
+
+void BattleEngine::reset() {
+    m_battle.reset();
+    m_roster = nullptr;
+}
+
+const Battle& BattleEngine::getBattle() const {
+    return m_battle;
+}
