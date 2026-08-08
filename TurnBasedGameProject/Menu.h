@@ -50,13 +50,13 @@ private:
     void doRemoveCharacterFromTeam();
 
     // ---------------------------------------------------------------
-    // Sub-menu: Battle  
+    // Battle: guided step-by-step flow (no sub-menu)
     // ---------------------------------------------------------------
-    void showBattleMenu()      const;
-    void doSelectTeams();
-    void doStartBattle();
-    void doPerformAction();
+    bool doSelectTeams();
+    bool doStartBattle();
     void doPrintBattleStatus() const;
+    void doPrintAliveEnemies(int actorSide) const;
+    void doWaitForEnter() const;
 
     // ---------------------------------------------------------------
     // Tiện ích nhập liệu — xử lý input không hợp lệ (TC-18)

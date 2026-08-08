@@ -65,6 +65,9 @@ public:
 
     bool isSetup() const;
 
+    // Reset toàn bộ trạng thái trận đấu về mặc định, cho phép bắt đầu trận mới
+    void reset();
+
 private:
     BattleState   m_state;
 
