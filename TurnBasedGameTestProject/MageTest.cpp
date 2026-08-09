@@ -17,17 +17,17 @@ TEST(MageTest, TC10LunaDanhAres)
 }
 
 
-TEST(MageTest, PerformActionWhenInsufficientManaUsesFallbackDamage)
+TEST(MageTest, TC11PerformActionWhenInsufficientManaUsesFallbackDamage)
 {
 	// Arrange
 	Warrior ares(1, "Ares", 100, "Warrior", 30);
-	Mage luna(2, "Luna", 80, "Mage", 5, 40, 10, 8); // mana = 5 < manaCost = 10, fallbackDamage = 8
+	Mage luna(2, "Luna", 80, "Mage", 0, 40, 10, 10); // mana = 0 < manaCost = 10, fallbackDamage = 10
 	// Act
 	bool result = luna.performAction(ares);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(ares.getMaxHp(), 92u); // 100 - 8 = 92
-	EXPECT_EQ(luna.getMaxMana(), 5u); // fallback does not consume mana
+	EXPECT_EQ(ares.getMaxHp(), 90u); // 100 - 10 = 90
+	EXPECT_EQ(luna.getMaxMana(), 0u); // fallback does not consume mana
 }
 
 
