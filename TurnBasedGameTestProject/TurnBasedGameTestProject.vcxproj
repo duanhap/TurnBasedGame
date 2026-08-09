@@ -146,6 +146,7 @@
     <ClCompile Include="WarriorTest.cpp" />
     <ClCompile Include="TeamManagerTest.cpp" />
     <ClCompile Include="DataFileManagerTest.cpp" />
+    <ClCompile Include="BattleEngineTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
