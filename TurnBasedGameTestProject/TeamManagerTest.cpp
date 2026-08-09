@@ -258,3 +258,170 @@ TEST(DataFileManagerTest, TC17_LoadTeams_FileDoesNotExist_ReturnsTrueAndRosterIs
     EXPECT_TRUE(manager.getTeams().empty());
 }
 
+
+
+// ===========================================================================
+// TC-05: Đảm bảo thỏa mãn yêu cầu: Nhân vật bị xóa sẽ bị xóa ở mọi nơi
+// Xóa một nhân vật đang nằm trong nhiều Team
+// ===========================================================================
+
+TEST(TeamManagerTest, TC05_DeleteCharacter_RemovesFromAllTeamsAndRoster)
+{
+    // Arrange: Tạo nhân vật và thêm vào nhiều team
+    CharacterRoster roster;
+    roster.add(makeTestWarrior(10, "Ares"));
+    roster.add(makeTestWarrior(20, "Thor"));
+    roster.add(makeTestWarrior(30, "Zeus"));
+    
+    TeamManager manager;
+    manager.createTeam(1, "TeamAlpha");
+    manager.createTeam(2, "TeamBeta");
+    manager.createTeam(3, "TeamGamma");
+    
+    // Thêm nhân vật 10 vào cả 3 team
+    EXPECT_TRUE(manager.addCharacterToTeam(1, 10, roster));
+    EXPECT_TRUE(manager.addCharacterToTeam(2, 10, roster));
+    EXPECT_TRUE(manager.addCharacterToTeam(3, 10, roster));
+    
+    // Thêm các nhân vật khác vào các team khác nhau
+    EXPECT_TRUE(manager.addCharacterToTeam(1, 20, roster));
+    EXPECT_TRUE(manager.addCharacterToTeam(2, 30, roster));
+    
+    // Kiểm tra trạng thái ban đầu
+    EXPECT_TRUE(roster.hasCharacter(10));
+    EXPECT_TRUE(manager.getTeam(1)->hasCharacter(10));
+    EXPECT_TRUE(manager.getTeam(2)->hasCharacter(10));
+    EXPECT_TRUE(manager.getTeam(3)->hasCharacter(10));
+    
+    // Act: Xóa nhân vật 10 khỏi CharacterRoster
+    bool removedFromRoster = roster.remove(10);
+    EXPECT_TRUE(removedFromRoster);
+    
+    // Sau khi xóa khỏi roster, cũng phải xóa khỏi tất cả teams
+    // (Trong thực tế, cần gọi hàm removeCharacterFromAllTeams)
+    manager.removeCharacterFromAllTeams(10);
+    
+    // Assert: Nhân vật bị xóa khỏi Roster và mọi Team liên quan
+    EXPECT_FALSE(roster.hasCharacter(10));
+    EXPECT_FALSE(manager.getTeam(1)->hasCharacter(10));
+    EXPECT_FALSE(manager.getTeam(2)->hasCharacter(10));
+    EXPECT_FALSE(manager.getTeam(3)->hasCharacter(10));
+    
+    // Các nhân vật khác không bị ảnh hưởng
+    EXPECT_TRUE(roster.hasCharacter(20));
+    EXPECT_TRUE(roster.hasCharacter(30));
+    EXPECT_TRUE(manager.getTeam(1)->hasCharacter(20));
+    EXPECT_TRUE(manager.getTeam(2)->hasCharacter(30));
+}
+
+TEST(TeamManagerTest, TC05_DeleteCharacter_IntegrationWithCharacterRoster)
+{
+    // Test tích hợp giữa CharacterRoster và TeamManager
+    CharacterRoster roster;
+    roster.add(makeTestWarrior(1, "Warrior1"));
+    roster.add(makeTestWarrior(2, "Warrior2"));
+    roster.add(makeTestWarrior(3, "Warrior3"));
+    
+    TeamManager teamManager;
+    teamManager.createTeam(100, "RedTeam");
+    teamManager.createTeam(200, "BlueTeam");
+    
+    // Thêm nhân vật vào các team
+    EXPECT_TRUE(teamManager.addCharacterToTeam(100, 1, roster));
+    EXPECT_TRUE(teamManager.addCharacterToTeam(100, 2, roster));
+    EXPECT_TRUE(teamManager.addCharacterToTeam(200, 2, roster));
+    EXPECT_TRUE(teamManager.addCharacterToTeam(200, 3, roster));
+    
+    // Kiểm tra nhân vật 2 có trong cả 2 team
+    EXPECT_TRUE(teamManager.getTeam(100)->hasCharacter(2));
+    EXPECT_TRUE(teamManager.getTeam(200)->hasCharacter(2));
+    
+    // Act: Xóa nhân vật 2
+    bool rosterRemoved = roster.remove(2);
+    EXPECT_TRUE(rosterRemoved);
+    
+    // Đồng thời xóa khỏi tất cả teams
+    teamManager.removeCharacterFromAllTeams(2);
+    
+    // Assert
+    EXPECT_FALSE(roster.hasCharacter(2));
+    EXPECT_FALSE(teamManager.getTeam(100)->hasCharacter(2));
+    EXPECT_FALSE(teamManager.getTeam(200)->hasCharacter(2));
+    
+    // Các nhân vật khác vẫn tồn tại
+    EXPECT_TRUE(roster.hasCharacter(1));
+    EXPECT_TRUE(roster.hasCharacter(3));
+    EXPECT_TRUE(teamManager.getTeam(100)->hasCharacter(1));
+    EXPECT_TRUE(teamManager.getTeam(200)->hasCharacter(3));
+}
+
+TEST(TeamManagerTest, TC05_DeleteCharacter_WithDataFileManagerIntegration)
+{
+    // Test tích hợp với DataFileManager: save/load sau khi xóa
+    CharacterRoster roster;
+    roster.add(makeTestWarrior(5, "Char5"));
+    roster.add(makeTestWarrior(6, "Char6"));
+    roster.add(makeTestWarrior(7, "Char7"));
+    
+    TeamManager manager;
+    manager.createTeam(1, "TeamOne");
+    manager.createTeam(2, "TeamTwo");
+    
+    manager.addCharacterToTeam(1, 5, roster);
+    manager.addCharacterToTeam(1, 6, roster);
+    manager.addCharacterToTeam(2, 6, roster);
+    manager.addCharacterToTeam(2, 7, roster);
+    
+    // Lưu teams
+    std::string testFile = "test_delete_char_teams.txt";
+    EXPECT_TRUE(DataFileManager::saveTeams(testFile, manager));
+    
+    // Xóa nhân vật 6
+    roster.remove(6);
+    manager.removeCharacterFromAllTeams(6);
+    
+    // Lưu lại sau khi xóa
+    std::string testFileAfterDelete = "test_after_delete_teams.txt";
+    EXPECT_TRUE(DataFileManager::saveTeams(testFileAfterDelete, manager));
+    
+    // Tải lại để kiểm tra
+    TeamManager loadedManager;
+    EXPECT_TRUE(DataFileManager::loadTeams(testFileAfterDelete, loadedManager, roster));
+    
+    // Assert: Nhân vật 6 không còn trong team
+    EXPECT_FALSE(loadedManager.getTeam(1)->hasCharacter(6));
+    EXPECT_FALSE(loadedManager.getTeam(2)->hasCharacter(6));
+    
+    // Các nhân vật khác vẫn tồn tại
+    EXPECT_TRUE(loadedManager.getTeam(1)->hasCharacter(5));
+    EXPECT_TRUE(loadedManager.getTeam(2)->hasCharacter(7));
+    
+    // Cleanup
+    std::remove(testFile.c_str());
+    std::remove(testFileAfterDelete.c_str());
+}
+
+TEST(TeamManagerTest, TC05_DeleteCharacter_EmptyTeamAfterDeletion)
+{
+    // Test: Khi xóa nhân vật cuối cùng khỏi team, team trở thành rỗng
+    CharacterRoster roster;
+    roster.add(makeTestWarrior(1, "SoloWarrior"));
+    
+    TeamManager manager;
+    manager.createTeam(1, "SoloTeam");
+    
+    manager.addCharacterToTeam(1, 1, roster);
+    
+    // Kiểm tra team có nhân vật
+    EXPECT_TRUE(manager.getTeam(1)->hasCharacter(1));
+    EXPECT_EQ(manager.getTeam(1)->getCharacterIds().size(), 1);
+    
+    // Xóa nhân vật
+    roster.remove(1);
+    manager.removeCharacterFromAllTeams(1);
+    
+    // Assert: Team trở thành rỗng
+    EXPECT_FALSE(manager.getTeam(1)->hasCharacter(1));
+    EXPECT_TRUE(manager.getTeam(1)->getCharacterIds().empty());
+    EXPECT_EQ(manager.getTeam(1)->getCharacterIds().size(), 0);
+}
