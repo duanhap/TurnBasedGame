@@ -169,7 +169,8 @@ void Menu::doAddCharacter() {
         }
     } else {
         // Healer
-        int healingPower = readInt("Nhap healingPower (> 0): ", 1, std::numeric_limits<int>::max());
+        int healingPower = readInt(("Nhap healingPower (" + std::to_string(HEALER_HEALING_POWER_LOWER) + " - " + std::to_string(HEALER_HEALING_POWER_UPPER) + "): ").c_str(),
+                              static_cast<int>(HEALER_HEALING_POWER_LOWER), static_cast<int>(HEALER_HEALING_POWER_UPPER));
         auto healer = std::make_unique<Healer>(id, name, (unsigned int)maxHp, (unsigned int)healingPower);
         int result = m_roster.add(std::move(healer));
         if (result != -1) {
@@ -225,9 +226,8 @@ void Menu::doEditCharacter() {
         ok = m_roster.updateArcher(id, newName, newMaxHp, normalDamage, criticalDamage);
     }
     else if (dynamic_cast<const Healer*>(ch)) {
-        int maxMahealingPowerna = readInt(("healingPower moi (" + std::to_string(HEALER_HEALING_POWER_LOWER) + " - " + std::to_string(HEALER_HEALING_POWER_UPPER) + "): ").c_str(),
+        int healingPower = readInt(("healingPower moi (" + std::to_string(HEALER_HEALING_POWER_LOWER) + " - " + std::to_string(HEALER_HEALING_POWER_UPPER) + "): ").c_str(),
                               static_cast<int>(HEALER_HEALING_POWER_LOWER), static_cast<int>(HEALER_HEALING_POWER_UPPER));
-        int healingPower = readInt("healingPower moi (> 0): ", 1, std::numeric_limits<int>::max());
         ok = m_roster.updateHealer(id, newName, newMaxHp, healingPower);
     }
     else {
