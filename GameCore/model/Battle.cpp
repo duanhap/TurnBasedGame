@@ -16,7 +16,7 @@ Battle::Battle()
     , m_isSetup(false)
 {}
 
-bool Battle::setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster) {
+bool Battle::setup(const Team* teamA, const Team* teamB, CharacterRoster& roster) {
     if (teamA == nullptr || teamB == nullptr)          return false;
     if (teamA->getId() == teamB->getId())               return false;
     if (teamA->getSize() == 0 || teamB->getSize() == 0) return false;
@@ -29,23 +29,23 @@ bool Battle::setup(const Team* teamA, const Team* teamB, const CharacterRoster& 
     m_sizeA = teamA->getSize();
     for (int i = 0; i < m_sizeA; ++i) {
         int cid = teamA->getCharacterIds()[i];
-        const Character* ch = roster.findById(cid);
+        Character* ch = roster.findById(cid);
         if (ch == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
             --m_sizeA; --i; continue;
         }
-        m_slotsA[i] = CombatantSlot(cid, ch->getMaxHp(), ch->getMaxMana());
+        m_slotsA[i] = ch;
     }
 
     m_sizeB = teamB->getSize();
     for (int i = 0; i < m_sizeB; ++i) {
         int cid = teamB->getCharacterIds()[i];
-        const Character* ch = roster.findById(cid);
+        Character* ch = roster.findById(cid);
         if (ch == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
             --m_sizeB; --i; continue;
         }
-        m_slotsB[i] = CombatantSlot(cid, ch->getMaxHp(), ch->getMaxMana());
+        m_slotsB[i] = ch;
     }
 
     if (m_sizeA == 0 || m_sizeB == 0) return false;
@@ -59,14 +59,12 @@ bool Battle::setup(const Team* teamA, const Team* teamB, const CharacterRoster& 
     return true;
 }
 
-void Battle::resetCombatants(const CharacterRoster& roster) {
+void Battle::resetCombatants() {
     for (int i = 0; i < m_sizeA; ++i) {
-        const Character* ch = roster.findById(m_slotsA[i].characterId);
-        if (ch) { m_slotsA[i].currentHp = ch->getMaxHp(); m_slotsA[i].currentMana = ch->getMaxMana(); }
+        if (m_slotsA[i]) m_slotsA[i]->resetForBattle();
     }
     for (int i = 0; i < m_sizeB; ++i) {
-        const Character* ch = roster.findById(m_slotsB[i].characterId);
-        if (ch) { m_slotsB[i].currentHp = ch->getMaxHp(); m_slotsB[i].currentMana = ch->getMaxMana(); }
+        if (m_slotsB[i]) m_slotsB[i]->resetForBattle();
     }
 }
 
@@ -81,17 +79,17 @@ int                Battle::getTeamBId()   const { return m_teamBId; }
 int Battle::getSizeA() const { return m_sizeA; }
 int Battle::getSizeB() const { return m_sizeB; }
 
-CombatantSlot& Battle::getSlot(int side, int index) {
+Character* Battle::getSlot(int side, int index) {
     return (side == 0) ? m_slotsA[index] : m_slotsB[index];
 }
-const CombatantSlot& Battle::getSlot(int side, int index) const {
+const Character* Battle::getSlot(int side, int index) const {
     return (side == 0) ? m_slotsA[index] : m_slotsB[index];
 }
 
 bool Battle::hasAlive(int side) const {
     int size = (side == 0) ? m_sizeA : m_sizeB;
     for (int i = 0; i < size; ++i)
-        if (getSlot(side, i).isAlive()) return true;
+        if (getSlot(side, i)->isAlive()) return true;
     return false;
 }
 

@@ -4,7 +4,7 @@
 #include <cctype>
 
 Character::Character(int id, std::string name, unsigned int maxHp, std::string type)
-	: id(id), name(name), maxHp(maxHp), type(type)
+	: id(id), name(name), maxHp(maxHp), type(type), currentHp(maxHp), currentMana(0)
 {
 
 }
@@ -44,17 +44,33 @@ void Character::display() const
 
 bool Character::isAlive() const
 {
-	return maxHp > 0;
+	return currentHp > 0;
 }
 
 void Character::reduceHp(unsigned int amount)
 {
-	if (amount >= maxHp) {
-		maxHp = 0;
+	if (amount >= currentHp) {
+		currentHp = 0;
 	}
 	else {
-		maxHp -= amount;
+		currentHp -= amount;
 	}
+}
+
+void Character::spendMana(unsigned int amount)
+{
+	if (amount >= currentMana) {
+		currentMana = 0;
+	}
+	else {
+		currentMana -= amount;
+	}
+}
+
+void Character::resetForBattle()
+{
+	currentHp   = maxHp;
+	currentMana = getMaxMana();
 }
 
 bool Character::setName(const std::string& newName)

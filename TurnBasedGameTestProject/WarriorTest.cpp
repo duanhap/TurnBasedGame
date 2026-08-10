@@ -13,7 +13,7 @@ TEST(WarriorTest, TC09AresDanhLuna)
 	bool result = ares.performAction(luna);
   // Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(luna.getMaxHp(), 50u); // 80 - 30 = 50
+	EXPECT_EQ(luna.getCurrentHp(), 50u); // 80 - 30 = 50
 }
 
 
@@ -28,7 +28,7 @@ TEST(WarriorTest, PerformActionReducesTargetHp)
 
     // Assert
     EXPECT_TRUE(result);
-    EXPECT_EQ(target.getMaxHp(), 30u);
+    EXPECT_EQ(target.getCurrentHp(), 30u);
 }
 
 TEST(WarriorTest, PerformActionReturnsFalseWhenTargetIsDead)
@@ -42,7 +42,7 @@ TEST(WarriorTest, PerformActionReturnsFalseWhenTargetIsDead)
 
     // Assert
     EXPECT_FALSE(result);
-    EXPECT_EQ(target.getMaxHp(), 0u);
+    EXPECT_EQ(target.getCurrentHp(), 0u);
 }
 
 TEST(WarriorTest, PerformActionReducesHpToZeroWhenDamageExceedsCurrentHp)
@@ -56,7 +56,7 @@ TEST(WarriorTest, PerformActionReducesHpToZeroWhenDamageExceedsCurrentHp)
 
     // Assert
     EXPECT_TRUE(result);
-    EXPECT_EQ(target.getMaxHp(), 0u);
+    EXPECT_EQ(target.getCurrentHp(), 0u);
     EXPECT_FALSE(target.isAlive());
 }
 
@@ -70,7 +70,7 @@ TEST(WarriorTest, PerformActionDoesNotDamageBelowZero)
     warrior.performAction(target);
 
     // Assert
-    EXPECT_EQ(target.getMaxHp(), 0u);
+    EXPECT_EQ(target.getCurrentHp(), 0u);
 }
 
 // ===========================================================================

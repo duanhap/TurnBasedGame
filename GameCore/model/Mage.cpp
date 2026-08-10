@@ -10,42 +10,23 @@ Mage::Mage(int id, std::string name, unsigned int maxHp, std::string type,
 	, spellDamage(spellDamage)
 	, manaCost(manaCost)
 	, fallbackDamage(fallbackDamage)
-{}
-
-void Mage::performActionInBattle(CombatantSlot& actorSlot, CombatantSlot& targetSlot)
 {
-	// Mage tự đọc currentMana từ slot phiên đấu — không đụng maxMana của Roster
-	// Không cần if/switch theo type ở BattleEngine — runtime polymorphism
-	if ((unsigned int)actorSlot.currentMana >= manaCost)
-	{
-		actorSlot.currentMana -= (int)manaCost;
-		targetSlot.currentHp  -= (int)spellDamage;
-		if (targetSlot.currentHp < 0) targetSlot.currentHp = 0;
-		std::cout << name << " (Mage) dung spell gay " << spellDamage
-		          << " sat thuong. Mana con: " << actorSlot.currentMana << std::endl;
-	}
-	else
-	{
-		targetSlot.currentHp -= (int)fallbackDamage;
-		if (targetSlot.currentHp < 0) targetSlot.currentHp = 0;
-		std::cout << name << " (Mage) het mana, dung fallback gay "
-		          << fallbackDamage << " sat thuong." << std::endl;
-	}
+	currentMana = maxMana; // base ctor không gọi được getMaxMana() (virtual), set ở đây
 }
 
 bool Mage::performAction(Character& target)
 {
-	// Overload cho test — ghi trực tiếp vào maxHp/maxMana của Character
 	if (!target.isAlive()) {
 		std::cout << "[LOI] Target da bi ha!" << std::endl;
 		return false;
 	}
-	if (maxMana >= manaCost)
+	// Mage dùng currentMana (battle state) — đủ mana thì spell, hết thì fallback
+	if (currentMana >= manaCost)
 	{
-		maxMana -= manaCost;
+		spendMana(manaCost);
 		target.reduceHp(spellDamage);
 		std::cout << name << " (Mage) dung spell danh " << target.getName()
-		          << " gay " << spellDamage << " sat thuong. Mana con: " << maxMana << std::endl;
+		          << " gay " << spellDamage << " sat thuong. Mana con: " << currentMana << std::endl;
 	}
 	else
 	{

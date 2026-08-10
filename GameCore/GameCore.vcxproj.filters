@@ -38,9 +38,6 @@
     <ClInclude Include="model\Battle.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
-    <ClInclude Include="model\CombatantSlot.h">
-      <Filter>Header Files\model</Filter>
-    </ClInclude>
     <ClInclude Include="model\Character.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
     <ClInclude Include="manager\TeamManager.h">
       <Filter>Header Files\manager</Filter>
     </ClInclude>
+    <ClInclude Include="Healer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <!-- Root sources -->
@@ -77,9 +77,6 @@
     </ClCompile>
     <!-- model sources -->
     <ClCompile Include="model\Battle.cpp">
-      <Filter>Source Files\model</Filter>
-    </ClCompile>
-    <ClCompile Include="model\CombatantSlot.cpp">
       <Filter>Source Files\model</Filter>
     </ClCompile>
     <ClCompile Include="model\Character.cpp">
@@ -106,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="manager\TeamManager.cpp">
       <Filter>Source Files\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Healer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

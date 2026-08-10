@@ -144,13 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Healer.h" />
     <ClInclude Include="manager\BattleEngine.h" />
     <ClInclude Include="manager\CharacterRoster.h" />
     <ClInclude Include="manager\DataFileManager.h" />
     <ClInclude Include="manager\TeamManager.h" />
     <ClInclude Include="model\Battle.h" />
     <ClInclude Include="model\Character.h" />
-    <ClInclude Include="model\CombatantSlot.h" />
     <ClInclude Include="model\Mage.h" />
     <ClInclude Include="model\Team.h" />
     <ClInclude Include="model\Warrior.h" />
@@ -158,13 +158,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameCore.cpp" />
+    <ClCompile Include="Healer.cpp" />
     <ClCompile Include="manager\BattleEngine.cpp" />
     <ClCompile Include="manager\CharacterRoster.cpp" />
     <ClCompile Include="manager\DataFileManager.cpp" />
     <ClCompile Include="manager\TeamManager.cpp" />
     <ClCompile Include="model\Battle.cpp" />
     <ClCompile Include="model\Character.cpp" />
-    <ClCompile Include="model\CombatantSlot.cpp" />
     <ClCompile Include="model\Mage.cpp" />
     <ClCompile Include="model\Team.cpp" />
     <ClCompile Include="model\Warrior.cpp" />

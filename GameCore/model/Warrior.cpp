@@ -8,16 +8,8 @@ Warrior::Warrior(int id, std::string name, unsigned int maxHp, std::string type,
 
 }
 
-void Warrior::performActionInBattle(CombatantSlot& actorSlot, CombatantSlot& targetSlot)
-{
-	targetSlot.currentHp -= (int)attackPower;
-	if (targetSlot.currentHp < 0) targetSlot.currentHp = 0;
-	std::cout << name << " (Warrior) tan cong gay " << attackPower << " sat thuong." << std::endl;
-}
-
 bool Warrior::performAction(Character& target)
 {
-	// Dùng cho test trực tiếp — ghi vào maxHp của Character (standalone, không phải phiên đấu)
 	if (!target.isAlive()) {
 		std::cout << "[LOI] Target da bi ha!" << std::endl;
 		return false;

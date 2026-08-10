@@ -1,7 +1,6 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
-#include "CombatantSlot.h"   // tách riêng để tránh circular dependency
 #include "Character.h"
 #include "Team.h"
 #include "../manager/CharacterRoster.h"
@@ -19,11 +18,11 @@ class Battle {
 public:
     Battle();
 
-    // Gán hai Team và khởi tạo mảng slot; trả false nếu không hợp lệ
-    bool setup(const Team* teamA, const Team* teamB, const CharacterRoster& roster);
+    // Gán hai Team và khởi tạo mảng combatant; trả false nếu không hợp lệ
+    bool setup(const Team* teamA, const Team* teamB, CharacterRoster& roster);
 
-    // Reset currentHp / currentMana về maxHp / maxMana (gọi khi Start)
-    void resetCombatants(const CharacterRoster& roster);
+    // Reset currentHp / currentMana của từng combatant về max (gọi khi Start)
+    void resetCombatants();
 
     
     BattleState getState() const;
@@ -39,9 +38,9 @@ public:
     int getSizeA() const;
     int getSizeB() const;
 
-    // Truy cập slot theo bên (side=0 → A, side=1 → B) và chỉ số
-    CombatantSlot& getSlot(int side, int index);
-    const CombatantSlot& getSlot(int side, int index) const;
+    // Truy cập combatant theo bên (side=0 → A, side=1 → B) và chỉ số
+    Character* getSlot(int side, int index);
+    const Character* getSlot(int side, int index) const;
 
     // Kiểm tra còn nhân vật sống trong một bên
     bool hasAlive(int side) const;
@@ -60,9 +59,6 @@ public:
     void setCursorA(int idx);
     void setCursorB(int idx);
 
-    // getCurrentIndex() trả cursor của bên đang đến lượt
-    //int  getCurrentIndex() const;
-
     bool isSetup() const;
 
     // Reset toàn bộ trạng thái trận đấu về mặc định, cho phép bắt đầu trận mới
@@ -78,8 +74,8 @@ private:
     std::string m_teamBName;
 
 
-    CombatantSlot m_slotsA[MAX_TEAM_SIZE];
-    CombatantSlot m_slotsB[MAX_TEAM_SIZE];
+    Character* m_slotsA[MAX_TEAM_SIZE];
+    Character* m_slotsB[MAX_TEAM_SIZE];
     int           m_sizeA;
     int           m_sizeB;
 

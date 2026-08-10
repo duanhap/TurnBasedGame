@@ -22,7 +22,7 @@ bool BattleEngine::startBattle() {
     if (m_battle.getState() == BattleState::IN_PROGRESS ||
         m_battle.getState() == BattleState::FINISHED)
         return false;
-    m_battle.resetCombatants(*m_roster);
+    m_battle.resetCombatants();
     // Reset cursor về 0 cho cả hai bên
     m_battle.setCursorA(0);
     m_battle.setCursorB(0);
@@ -31,7 +31,7 @@ bool BattleEngine::startBattle() {
     m_battle.incrementTurn();   // lượt 1
 
     // Nếu NV[0] của A đã chết (hiếm nhưng phòng thủ) thì advance
-    if (!m_battle.getSlot(0, m_battle.getCursorA()).isAlive()) {
+    if (!m_battle.getSlot(0, m_battle.getCursorA())->isAlive()) {
         advanceCursorForSide(0);
     }
     return true;
@@ -44,9 +44,9 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     int actorSide  = m_battle.getCurrentSide();
     // Dùng cursor riêng của bên đang đến lượt
     int actorIndex = (actorSide == 0) ? m_battle.getCursorA() : m_battle.getCursorB();
-    CombatantSlot& actorSlot = m_battle.getSlot(actorSide, actorIndex);
+    Character* actorChar = m_battle.getSlot(actorSide, actorIndex);
 
-    if (!actorSlot.isAlive()) {
+    if (actorChar == nullptr || !actorChar->isAlive()) {
         advanceToNextActor();
         return false;
     }
@@ -54,17 +54,15 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     if (!isValidTarget(targetCharacterId, actorSide))
         return false;
 
-    Character* actorChar = m_roster->findById(actorSlot.characterId);
-    if (actorChar == nullptr) return false;
-
     int targetSide = -1, targetIndex = -1;
     if (!findSlot(targetCharacterId, targetSide, targetIndex))
         return false;
-    CombatantSlot& targetSlot = m_battle.getSlot(targetSide, targetIndex);
+    Character* targetChar = m_battle.getSlot(targetSide, targetIndex);
+    if (targetChar == nullptr) return false;
 
     // *** RUNTIME POLYMORPHISM — không có dynamic_cast, không có if/switch ***
-    // Warrior hoặc Mage tự quyết định hành vi dựa trên slot phiên đấu
-    actorChar->performActionInBattle(actorSlot, targetSlot);
+    // Warrior hoặc Mage tự quyết định hành vi trên battle state của chính nó
+    actorChar->performAction(*targetChar);
 
     if (!m_battle.hasAlive(targetSide)) {
         m_battle.setState(BattleState::FINISHED);
@@ -86,12 +84,11 @@ bool BattleEngine::isFinished() const {
 
 const Character* BattleEngine::getCurrentActor() const {
     if (m_battle.getState() != BattleState::IN_PROGRESS) return nullptr;
-    if (m_roster == nullptr) return nullptr;
     int side   = m_battle.getCurrentSide();
     int cursor = (side == 0) ? m_battle.getCursorA() : m_battle.getCursorB();
-    const CombatantSlot& slot = m_battle.getSlot(side, cursor);
-    if (!slot.isAlive()) return nullptr;
-    return m_roster->findById(slot.characterId);
+    const Character* ch = m_battle.getSlot(side, cursor);
+    if (ch == nullptr || !ch->isAlive()) return nullptr;
+    return ch;
 }
 
 const std::string* BattleEngine::getWinnerName() const {
@@ -122,8 +119,7 @@ void BattleEngine::printStatus(const CharacterRoster& roster) const {
         std::cout << "  ID  | Ten             | HP      | Mana   | Status\n";
         std::cout << "------|-----------------|---------|--------|-------\n";
         for (int i = 0; i < size; ++i) {
-            const CombatantSlot& slot = m_battle.getSlot(side, i);
-            const Character* ch = roster.findById(slot.characterId);
+            const Character* ch = m_battle.getSlot(side, i);
             if (ch == nullptr) continue;
             int currentCursor = (side == 0) ? m_battle.getCursorA() : m_battle.getCursorB();
             bool isCurrent = (m_battle.getState() == BattleState::IN_PROGRESS
@@ -135,12 +131,12 @@ void BattleEngine::printStatus(const CharacterRoster& roster) const {
             if (nm.size() > 15) nm = nm.substr(0, 15);
             std::cout << nm;
             for (int p = (int)nm.size(); p < 15; ++p) std::cout << ' ';
-            std::cout << " | " << slot.currentHp << "/" << ch->getMaxHp();
+            std::cout << " | " << ch->getCurrentHp() << "/" << ch->getMaxHp();
             if (ch->getMaxMana() > 0)
-                std::cout << " | " << slot.currentMana << "/" << ch->getMaxMana();
+                std::cout << " | " << ch->getCurrentMana() << "/" << ch->getMaxMana();
             else
                 std::cout << " | -      ";
-            std::cout << " | " << (slot.isAlive() ? "Alive" : "KO") << "\n";
+            std::cout << " | " << (ch->isAlive() ? "Alive" : "KO") << "\n";
         }
     }
     std::cout << "======================================\n";
@@ -150,7 +146,8 @@ bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const 
     for (int side = 0; side < 2; ++side) {
         int size = (side == 0) ? m_battle.getSizeA() : m_battle.getSizeB();
         for (int i = 0; i < size; ++i) {
-            if (m_battle.getSlot(side, i).characterId == characterId) {
+            const Character* ch = m_battle.getSlot(side, i);
+            if (ch != nullptr && ch->getId() == characterId) {
                 outSide  = side;
                 outIndex = i;
                 return true;
@@ -164,7 +161,8 @@ bool BattleEngine::isValidTarget(int targetId, int actorSide) const {
     int tSide = -1, tIndex = -1;
     if (!findSlot(targetId, tSide, tIndex)) return false;
     if (tSide == actorSide) return false;
-    return m_battle.getSlot(tSide, tIndex).isAlive();
+    const Character* ch = m_battle.getSlot(tSide, tIndex);
+    return ch != nullptr && ch->isAlive();
 }
 
 void BattleEngine::advanceToNextActor() {
@@ -183,7 +181,8 @@ void BattleEngine::advanceToNextActor() {
         // Nếu cursor bên kia đang trỏ vào NV chết (ví dụ vừa bị kill),
         // thì advance cursor của họ luôn
         int cursor = (nextSide == 0) ? m_battle.getCursorA() : m_battle.getCursorB();
-        if (!m_battle.getSlot(nextSide, cursor).isAlive()) {
+        const Character* ch = m_battle.getSlot(nextSide, cursor);
+        if (ch == nullptr || !ch->isAlive()) {
             advanceCursorForSide(nextSide);
         }
     }
@@ -198,7 +197,8 @@ void BattleEngine::advanceCursorForSide(int side) {
     // Tìm NV còn sống tiếp theo theo thứ tự vòng tròn
     for (int offset = 1; offset <= size; ++offset) {
         int next = (cursor + offset) % size;
-        if (m_battle.getSlot(side, next).isAlive()) {
+        const Character* ch = m_battle.getSlot(side, next);
+        if (ch != nullptr && ch->isAlive()) {
             if (side == 0) m_battle.setCursorA(next);
             else           m_battle.setCursorB(next);
             return;
