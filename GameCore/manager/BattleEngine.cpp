@@ -60,9 +60,34 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
     Character* targetChar = m_battle.getSlot(targetSide, targetIndex);
     if (targetChar == nullptr) return false;
 
+    int targetHpBefore = targetChar->getCurrentHp();
+
     // *** RUNTIME POLYMORPHISM — không có dynamic_cast, không có if/switch ***
     // Warrior hoặc Mage tự quyết định hành vi trên battle state của chính nó
     actorChar->performAction(*targetChar);
+
+    int targetHpAfter = targetChar->getCurrentHp();
+    int hpDiff = (int)targetHpBefore - (int)targetHpAfter;
+    std::string actionType = "DAMAGE";
+    int val = hpDiff;
+    if (hpDiff < 0) {
+        actionType = "HEAL";
+        val = -hpDiff;
+    }
+
+    BattleLogEntry entry;
+    entry.turnNumber = m_battle.getTurnNumber();
+    entry.actorId = actorChar->getId();
+    entry.actorName = actorChar->getName();
+    entry.targetId = targetChar->getId();
+    entry.targetName = targetChar->getName();
+    entry.actionType = actionType;
+    entry.value = val;
+    entry.targetHpAfter = targetHpAfter;
+    entry.targetMaxHp = targetChar->getMaxHp();
+    entry.targetAliveAfter = targetChar->isAlive();
+
+    m_battleLog.push_back(entry);
 
     if (!m_battle.hasAlive(targetSide)) {
         m_battle.setState(BattleState::FINISHED);
@@ -140,6 +165,24 @@ void BattleEngine::printStatus(const CharacterRoster& roster) const {
         }
     }
     std::cout << "======================================\n";
+    if (!m_battleLog.empty()) {
+        std::cout << "\n--- BATTLE LOG ---\n";
+        for (const auto& entry : m_battleLog) {
+            std::cout << "[Luot " << entry.turnNumber << "] " 
+                      << entry.actorName << " (ID: " << entry.actorId << ") ";
+            if (entry.actionType == "DAMAGE") {
+                std::cout << "tan cong " << entry.targetName << " (ID: " << entry.targetId << ") ";
+                std::cout << "gay " << entry.value << " sat thuong. ";
+            } else if (entry.actionType == "HEAL") {
+                std::cout << "hoi HP cho " << entry.targetName << " (ID: " << entry.targetId << ") ";
+                std::cout << "them " << entry.value << " HP. ";
+            }
+            std::cout << "-> Trang thai sau hanh dong: " << entry.targetName
+                      << " (HP: " << entry.targetHpAfter << "/" << entry.targetMaxHp
+                      << ", Status: " << (entry.targetAliveAfter ? "Alive" : "KO") << ")\n";
+        }
+        std::cout << "--------------------------------------\n";
+    }
 }
 
 bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const {
@@ -210,8 +253,17 @@ void BattleEngine::advanceCursorForSide(int side) {
 void BattleEngine::reset() {
     m_battle.reset();
     m_roster = nullptr;
+    clearBattleLog();
 }
 
 const Battle& BattleEngine::getBattle() const {
     return m_battle;
+}
+
+const std::vector<BattleLogEntry>& BattleEngine::getBattleLog() const {
+    return m_battleLog;
+}
+
+void BattleEngine::clearBattleLog() {
+    m_battleLog.clear();
 }

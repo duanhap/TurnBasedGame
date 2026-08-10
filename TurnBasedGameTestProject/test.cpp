@@ -85,3 +85,40 @@ TEST(BattleEngineTest, TC13_TC14_TC15_IntegrationTest) {
     // Performing an action after the battle is finished must be rejected (returns false)
     EXPECT_FALSE(engine.performCurrentAction(3)); // TC-15 PASS
 }
+
+TEST(BattleEngineTest, BattleLoggingVerification) {
+    CharacterRoster roster;
+    auto wA = std::make_unique<Warrior>(1, "Ares", 100, "Warrior", 25);
+    auto wB = std::make_unique<Warrior>(2, "Thor", 100, "Warrior", 15);
+    roster.add(std::move(wA));
+    roster.add(std::move(wB));
+
+    Team teamA(1, "RedTeam");
+    teamA.addCharacter(1);
+    Team teamB(2, "BlueTeam");
+    teamB.addCharacter(2);
+
+    BattleEngine engine;
+    ASSERT_TRUE(engine.selectTeams(&teamA, &teamB, roster));
+    ASSERT_TRUE(engine.startBattle());
+
+    // Turn 1: Ares (1) attacks Thor (2)
+    ASSERT_TRUE(engine.performCurrentAction(2));
+
+    const auto& log = engine.getBattleLog();
+    ASSERT_EQ(log.size(), 1);
+    EXPECT_EQ(log[0].turnNumber, 1);
+    EXPECT_EQ(log[0].actorId, 1);
+    EXPECT_EQ(log[0].actorName, "Ares");
+    EXPECT_EQ(log[0].targetId, 2);
+    EXPECT_EQ(log[0].targetName, "Thor");
+    EXPECT_EQ(log[0].actionType, "DAMAGE");
+    EXPECT_EQ(log[0].value, 25);
+    EXPECT_EQ(log[0].targetHpAfter, 75);
+    EXPECT_TRUE(log[0].targetAliveAfter);
+
+    // Reset battle
+    engine.reset();
+    EXPECT_TRUE(engine.getBattleLog().empty());
+}
+
