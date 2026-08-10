@@ -2,6 +2,8 @@
 #include "CharacterRoster.h"
 #include "../model/Warrior.h"
 #include "../model/Mage.h"
+#include "../model/Archer.h"
+#include "../model/Healer.h"
 #include <algorithm>
 #include <iostream>
 #include <cctype>
@@ -172,6 +174,74 @@ bool CharacterRoster::updateMage(int charId, const std::string& newName, unsigne
         mage->setMaxMana(oldMaxMana);
         mage->setSpellDamage(oldSpellDamage);
         mage->setManaCost(oldManaCost);
+        return false;
+    }
+
+    return true;
+}
+
+// New: Archer update
+bool CharacterRoster::updateArcher(int charId, const std::string& newName, unsigned int newMaxHp, unsigned int newNormalDamage, unsigned int newCriticalDamage)
+{
+    Character* c = findById(charId);
+    if (!c) return false;
+
+    Archer* archer = dynamic_cast<Archer*>(c);
+    if (!archer) return false;
+
+    // Save old values for rollback
+    std::string oldName = archer->getName();
+    unsigned int oldMaxHp = archer->getMaxHp();
+    unsigned int oldNormal = archer->getNormalDamage();
+    unsigned int oldCritical = archer->getCriticalDamage();
+
+    if (!archer->setName(newName)) return false;
+
+    if (!archer->setMaxHp(newMaxHp)) {
+        archer->setName(oldName);
+        return false;
+    }
+
+    if (!archer->setNormalDamage(static_cast<int>(newNormalDamage))) {
+        archer->setName(oldName);
+        archer->setMaxHp(oldMaxHp);
+        return false;
+    }
+
+    if (!archer->setCriticalDamage(static_cast<int>(newCriticalDamage))) {
+        archer->setName(oldName);
+        archer->setMaxHp(oldMaxHp);
+        archer->setNormalDamage(static_cast<int>(oldNormal));
+        return false;
+    }
+
+    return true;
+}
+
+// New: Healer update
+bool CharacterRoster::updateHealer(int charId, const std::string& newName, unsigned int newMaxHp, unsigned int newHealingPower)
+{
+    Character* c = findById(charId);
+    if (!c) return false;
+
+    Healer* healer = dynamic_cast<Healer*>(c);
+    if (!healer) return false;
+
+    // Save old values for rollback
+    std::string oldName = healer->getName();
+    unsigned int oldMaxHp = healer->getMaxHp();
+    unsigned int oldHealing = healer->getHealingPower();
+
+    if (!healer->setName(newName)) return false;
+
+    if (!healer->setMaxHp(newMaxHp)) {
+        healer->setName(oldName);
+        return false;
+    }
+
+    if (!healer->setHealingPower(newHealingPower)) {
+        healer->setName(oldName);
+        healer->setMaxHp(oldMaxHp);
         return false;
     }
 

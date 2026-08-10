@@ -27,6 +27,8 @@ public:
 	std::vector<Character*> findByName(const std::string& name) const;
 	bool updateWarrior(int charId, const std::string& newName, unsigned int newMaxHp, int newAttackPower); // cập nhật thông tin nhân vật Warrior theo character.id. trả về true nếu thành công, false nếu thất bại (do ko tìm thấy charId hoặc thông tin mới ko hợp lệ)
 	bool updateMage(int charId, const std::string& newName, unsigned int newMaxHp, unsigned int newMaxMana, unsigned int newSpellDamage, unsigned int newManaCost, unsigned int newFallbackDamage); // cập nhật thông tin nhân vật Mage theo character.id. trả về true nếu thành công, false nếu thất bại (do ko tìm thấy charId hoặc thông tin mới ko hợp lệ)
+	bool updateArcher(int charId, const std::string& newName, unsigned int newMaxHp, unsigned int newNormalDamage, unsigned int newCriticalDamage);
+	bool updateHealer(int charId, const std::string& newName, unsigned int newMaxHp, unsigned int newHealingPower);
 	/// xóa nhân vật khỏi roster theo character.id
 	bool remove(int charId); 
 	/// trả về true nếu ko có nhân vật nào.

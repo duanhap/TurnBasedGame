@@ -34,8 +34,8 @@ void Archer::display() const
 {
 	Character::display();
 	std::cout
-		<< "Normal Damage = " << normalDamage << std::endl
-		<< "Critical Damage = " << criticalDamage << std::endl;
+		<< "Normal Damage = " << normalDamage 
+		<< " | Critical Damage = " << criticalDamage << std::endl;
 }
 
 bool Archer::setNormalDamage(int newNormalDamage)
