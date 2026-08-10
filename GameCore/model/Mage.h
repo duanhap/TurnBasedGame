@@ -21,7 +21,6 @@ public:
 	~Mage() = default;
 
 	bool performAction(Character& target) override;
-	void performActionInBattle(CombatantSlot& actorSlot, CombatantSlot& targetSlot) override;
 
 	void display() const override;
 

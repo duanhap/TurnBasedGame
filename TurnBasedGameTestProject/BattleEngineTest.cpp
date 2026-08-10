@@ -202,17 +202,17 @@ TEST(BattleEngineTest, TC08_PerformAction_InvalidTarget_HPmanaUnchanged)
 
     // Lấy slot của Ares và Luna để kiểm tra HP/mana ban đầu
     // Team A (0): Ares, Team B (1): Luna
-    const CombatantSlot& aresSlotBefore = battle.getSlot(0, 0);
-    const CombatantSlot& lunaSlotBefore = battle.getSlot(1, 0);
+    const Character* aresSlotBefore = battle.getSlot(0, 0);
+    const Character* lunaSlotBefore = battle.getSlot(1, 0);
 
-    int aresHpBefore = aresSlotBefore.currentHp;
-    int lunaHpBefore = lunaSlotBefore.currentHp;
-    int lunaManaBefore = lunaSlotBefore.currentMana;
+    unsigned int aresHpBefore = aresSlotBefore->getCurrentHp();
+    unsigned int lunaHpBefore = lunaSlotBefore->getCurrentHp();
+    unsigned int lunaManaBefore = lunaSlotBefore->getCurrentMana();
 
     // Xác nhận HP ban đầu đúng
-    EXPECT_EQ(aresHpBefore, 100); // Ares có 100 HP
-    EXPECT_EQ(lunaHpBefore, 80);  // Luna có 80 HP
-    EXPECT_EQ(lunaManaBefore, 50); // Luna có 50 mana
+    EXPECT_EQ(aresHpBefore, 100u); // Ares có 100 HP
+    EXPECT_EQ(lunaHpBefore, 80u);  // Luna có 80 HP
+    EXPECT_EQ(lunaManaBefore, 50u); // Luna có 50 mana
 
     // Xác nhận lượt hiện tại là Ares (Team A)
     const Character* currentActor = battleEngine.getCurrentActor();
@@ -224,24 +224,24 @@ TEST(BattleEngineTest, TC08_PerformAction_InvalidTarget_HPmanaUnchanged)
     EXPECT_FALSE(actionResult1); // Hành động thất bại
 
     // Kiểm tra HP/mana không thay đổi
-    const CombatantSlot& aresSlotAfter1 = battleEngine.getBattle().getSlot(0, 0);
-    const CombatantSlot& lunaSlotAfter1 = battleEngine.getBattle().getSlot(1, 0);
+    const Character* aresSlotAfter1 = battleEngine.getBattle().getSlot(0, 0);
+    const Character* lunaSlotAfter1 = battleEngine.getBattle().getSlot(1, 0);
 
-    EXPECT_EQ(aresSlotAfter1.currentHp, aresHpBefore);     // Ares HP không đổi
-    EXPECT_EQ(lunaSlotAfter1.currentHp, lunaHpBefore);     // Luna HP không đổi  
-    EXPECT_EQ(lunaSlotAfter1.currentMana, lunaManaBefore); // Luna mana không đổi
+    EXPECT_EQ(aresSlotAfter1->getCurrentHp(), aresHpBefore);     // Ares HP không đổi
+    EXPECT_EQ(lunaSlotAfter1->getCurrentHp(), lunaHpBefore);     // Luna HP không đổi  
+    EXPECT_EQ(lunaSlotAfter1->getCurrentMana(), lunaManaBefore); // Luna mana không đổi
 
     // Act 2: Target nhân vật không tồn tại trong battle
     bool actionResult2 = battleEngine.performCurrentAction(999);
     EXPECT_FALSE(actionResult2);
 
     // Kiểm tra HP/mana vẫn không đổi
-    const CombatantSlot& aresSlotAfter2 = battleEngine.getBattle().getSlot(0, 0);
-    const CombatantSlot& lunaSlotAfter2 = battleEngine.getBattle().getSlot(1, 0);
+    const Character* aresSlotAfter2 = battleEngine.getBattle().getSlot(0, 0);
+    const Character* lunaSlotAfter2 = battleEngine.getBattle().getSlot(1, 0);
 
-    EXPECT_EQ(aresSlotAfter2.currentHp, aresHpBefore);
-    EXPECT_EQ(lunaSlotAfter2.currentHp, lunaHpBefore);
-    EXPECT_EQ(lunaSlotAfter2.currentMana, lunaManaBefore);
+    EXPECT_EQ(aresSlotAfter2->getCurrentHp(), aresHpBefore);
+    EXPECT_EQ(lunaSlotAfter2->getCurrentHp(), lunaHpBefore);
+    EXPECT_EQ(lunaSlotAfter2->getCurrentMana(), lunaManaBefore);
 
     // Battle vẫn trong trạng thái IN_PROGRESS
     EXPECT_TRUE(battleEngine.isInProgress());

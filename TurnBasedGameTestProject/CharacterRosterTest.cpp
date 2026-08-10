@@ -192,7 +192,8 @@ TEST(CharacterRosterTest, FindByIdMutable_ExistingId_ReturnsNonConstPointer)
     ASSERT_NE(c, nullptr);
     // Verify we can mutate through it (e.g., reduce hp)
     c->reduceHp(30);
-    EXPECT_EQ(c->getMaxHp(), 70);
+    EXPECT_EQ(c->getCurrentHp(), 70);
+    EXPECT_EQ(c->getMaxHp(), 100u); // maxHp là ngưỡng bất biến, không đổi
 }
 
 TEST(CharacterRosterTest, FindByIdMutable_NonExistingId_ReturnsNull)

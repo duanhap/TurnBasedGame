@@ -12,22 +12,22 @@ TEST(MageTest, TC10LunaDanhAres)
 	bool result = luna.performAction(ares);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(ares.getMaxHp(), 60u); // 100 - 40 = 60
-	EXPECT_EQ(luna.getMaxMana(), 0u); // 10 - 10 = 0
+	EXPECT_EQ(ares.getCurrentHp(), 60u); // 100 - 40 = 60
+	EXPECT_EQ(luna.getCurrentMana(), 0u); // 10 - 10 = 0
 }
 
 
-TEST(MageTest, PerformActionWhenInsufficientManaUsesFallbackDamage)
+TEST(MageTest, TC11PerformActionWhenInsufficientManaUsesFallbackDamage)
 {
 	// Arrange
 	Warrior ares(1, "Ares", 100, "Warrior", 30);
-	Mage luna(2, "Luna", 80, "Mage", 5, 40, 10, 8); // mana = 5 < manaCost = 10, fallbackDamage = 8
+	Mage luna(2, "Luna", 80, "Mage", 0, 40, 10, 10); // mana = 0 < manaCost = 10, fallbackDamage = 10
 	// Act
 	bool result = luna.performAction(ares);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(ares.getMaxHp(), 92u); // 100 - 8 = 92
-	EXPECT_EQ(luna.getMaxMana(), 5u); // fallback does not consume mana
+	EXPECT_EQ(ares.getCurrentHp(), 90u); // 100 - 10 = 90
+	EXPECT_EQ(luna.getCurrentMana(), 0u); // fallback does not consume mana
 }
 
 
@@ -40,8 +40,8 @@ TEST(MageTest, PerformActionReturnsFalseWhenTargetIsDead)
 	bool result = luna.performAction(deadAres);
 	// Assert
 	EXPECT_FALSE(result);
-	EXPECT_EQ(deadAres.getMaxHp(), 0u);
-	EXPECT_EQ(luna.getMaxMana(), 100u); // mana should not be consumed
+	EXPECT_EQ(deadAres.getCurrentHp(), 0u);
+	EXPECT_EQ(luna.getCurrentMana(), 100u); // mana should not be consumed
 }
 
 
@@ -54,9 +54,9 @@ TEST(MageTest, PerformActionSpellDamageReducesHpToZero)
 	bool result = luna.performAction(target);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(target.getMaxHp(), 0u);
+	EXPECT_EQ(target.getCurrentHp(), 0u);
 	EXPECT_FALSE(target.isAlive());
-	EXPECT_EQ(luna.getMaxMana(), 40u); // 50 - 10 = 40
+	EXPECT_EQ(luna.getCurrentMana(), 40u); // 50 - 10 = 40
 }
 
 
@@ -69,8 +69,8 @@ TEST(MageTest, PerformActionFallbackDamageDoesNotReduceBelowZero)
 	bool result = luna.performAction(target);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(target.getMaxHp(), 0u); // should cap at 0, not negative
-	EXPECT_EQ(luna.getMaxMana(), 0u); // mana stays 0
+	EXPECT_EQ(target.getCurrentHp(), 0u); // should cap at 0, not negative
+	EXPECT_EQ(luna.getCurrentMana(), 0u); // mana stays 0
 }
 
 
@@ -83,8 +83,8 @@ TEST(MageTest, PerformActionZeroManaCostCastsSpellWithoutDrainingMana)
 	bool result = luna.performAction(ares);
 	// Assert
 	EXPECT_TRUE(result);
-	EXPECT_EQ(ares.getMaxHp(), 75u); // 100 - 25 = 75
-	EXPECT_EQ(luna.getMaxMana(), 20u); // mana unchanged because cost is 0
+	EXPECT_EQ(ares.getCurrentHp(), 75u); // 100 - 25 = 75
+	EXPECT_EQ(luna.getCurrentMana(), 20u); // mana unchanged because cost is 0
 }
 
 

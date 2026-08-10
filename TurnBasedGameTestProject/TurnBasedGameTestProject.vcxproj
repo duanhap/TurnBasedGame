@@ -134,6 +134,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HealerTest.cpp" />
     <ClCompile Include="MageTest.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="pch.cpp">
@@ -144,6 +145,7 @@
     </ClCompile>
     <ClCompile Include="CharacterRosterTest.cpp" />
     <ClCompile Include="WarriorTest.cpp" />
+    <ClCompile Include="ArcherTest.cpp" />
     <ClCompile Include="TeamManagerTest.cpp" />
     <ClCompile Include="DataFileManagerTest.cpp" />
     <ClCompile Include="BattleEngineTest.cpp" />

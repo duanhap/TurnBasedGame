@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -38,9 +38,6 @@
     <ClInclude Include="model\Battle.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
-    <ClInclude Include="model\CombatantSlot.h">
-      <Filter>Header Files\model</Filter>
-    </ClInclude>
     <ClInclude Include="model\Character.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
@@ -51,6 +48,9 @@
       <Filter>Header Files\model</Filter>
     </ClInclude>
     <ClInclude Include="model\Warrior.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="model\Archer.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
     <!-- manager headers -->
@@ -66,6 +66,9 @@
     <ClInclude Include="manager\TeamManager.h">
       <Filter>Header Files\manager</Filter>
     </ClInclude>
+    <ClInclude Include="model\Healer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <!-- Root sources -->
@@ -77,9 +80,6 @@
     </ClCompile>
     <!-- model sources -->
     <ClCompile Include="model\Battle.cpp">
-      <Filter>Source Files\model</Filter>
-    </ClCompile>
-    <ClCompile Include="model\CombatantSlot.cpp">
       <Filter>Source Files\model</Filter>
     </ClCompile>
     <ClCompile Include="model\Character.cpp">
@@ -94,6 +94,9 @@
     <ClCompile Include="model\Warrior.cpp">
       <Filter>Source Files\model</Filter>
     </ClCompile>
+    <ClCompile Include="model\Archer.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
     <!-- manager sources -->
     <ClCompile Include="manager\BattleEngine.cpp">
       <Filter>Source Files\manager</Filter>
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="manager\TeamManager.cpp">
       <Filter>Source Files\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="model\Healer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

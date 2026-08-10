@@ -34,6 +34,11 @@ int CharacterRoster::add(std::unique_ptr<Character> character)
         return -1;
     }
 
+    if (characters.size() >= MAX_SIZE) {
+        std::cout << "Loi: Roster da dat toi da so luong nhan vat!" << std::endl;
+        return -1;
+		}
+
     int id = character->getId();
     characters.push_back(std::move(character));
     return id;

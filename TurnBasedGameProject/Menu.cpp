@@ -3,13 +3,13 @@
 #include "Warrior.h"
 #include "Mage.h"
 #include "Battle.h"
-#include "CombatantSlot.h"
 #include <iostream>
 #include <limits>
 #include <string>
 #include <memory>
 #include <thread>
 #include <chrono>
+
 /*
 Contributors: Nguyen Dinh Dung, 
 Last modified: 2026-08-07
@@ -495,12 +495,10 @@ void Menu::doPrintAliveEnemies(int actorSide) const {
 
     std::cout << "\nMuc tieu kha dung:\n";
     for (int i = 0; i < size; ++i) {
-        const CombatantSlot& slot = battle.getSlot(enemySide, i);
-        if (!slot.isAlive()) continue;
-        const Character* ch = m_roster.findById(slot.characterId);
-        if (ch == nullptr) continue;
+        const Character* ch = battle.getSlot(enemySide, i);
+        if (ch == nullptr || !ch->isAlive()) continue;
         std::cout << "  [" << ch->getId() << "] " << ch->getName()
-                  << " - HP: " << slot.currentHp << "/" << ch->getMaxHp() << "\n";
+                  << " - HP: " << ch->getCurrentHp() << "/" << ch->getMaxHp() << "\n";
     }
     std::cout << "\n";
 }
