@@ -442,14 +442,27 @@ void Menu::handleBattleMenu() {
                   << " | Den luot: [" << actor->getId() << "] "
                   << actor->getName() << " (" << actor->getType() << ")\n";
 
-        // Hiển thị danh sách đối thủ còn sống
-        doPrintAliveEnemies(actorSide);
+        // Hiển thị danh sách đối thủ còn sống as slot numbers
+        std::vector<const Character*> aliveTargets = getAliveTargets(actorSide, actor);
+        if (aliveTargets.empty()) {
+            std::cout << "[LOI] Khong co muc tieu nao.\n";
+            break;
+        }
+        if (actor->getType() == "HEALER" || actor->getType() == "Healer")
+            std::cout << "\nMuc tieu kha dung (chon theo slot - allies):\n";
+        else
+            std::cout << "\nMuc tieu kha dung (chon theo slot):\n";
+        for (size_t s = 0; s < aliveTargets.size(); ++s) {
+            const Character* ch = aliveTargets[s];
+            std::cout << "  [" << (s + 1) << "] " << ch->getName()
+                      << " - HP: " << ch->getCurrentHp() << "/" << ch->getMaxHp() << "\n";
+        }
 
-        // Nhập target — lặp cho đến khi hợp lệ
+        // Nhập slot — lặp cho đến khi hợp lệ
         bool actionOk = false;
         while (!actionOk) {
-            int targetId = readInt("Chon ID nhan vat doi thu de tan cong: ",
-                                   1, std::numeric_limits<int>::max());
+            int slot = readInt("Chon slot cua muc tieu de tan cong (1..): ", 1, static_cast<int>(aliveTargets.size()));
+            int targetId = aliveTargets[slot - 1]->getId();
             actionOk = m_battleEngine.performCurrentAction(targetId);
             if (!actionOk) {
                 std::cout << "[LOI] Muc tieu khong hop le (sai doi, da chet, hoac khong ton tai). Chon lai.\n";
@@ -546,6 +559,23 @@ void Menu::doPrintAliveEnemies(int actorSide) const {
     std::cout << "\n";
 }
 
+std::vector<const Character*> Menu::getAliveTargets(int actorSide, const Character* actor) const {
+    std::vector<const Character*> result;
+    // If actor is a Healer, allow targeting allies (same side). Otherwise target enemies.
+    int targetSide = 1 - actorSide;
+    if (actor != nullptr) {
+        std::string t = actor->getType();
+        if (t == "HEALER" || t == "Healer") targetSide = actorSide;
+    }
+    const Battle& battle = m_battleEngine.getBattle();
+    int size = (targetSide == 0) ? battle.getSizeA() : battle.getSizeB();
+    for (int i = 0; i < size; ++i) {
+        const Character* ch = battle.getSlot(targetSide, i);
+        if (ch != nullptr && ch->isAlive()) result.push_back(ch);
+    }
+    return result;
+}
+
 void Menu::doWaitForEnter() const {
     std::cout << "[Nhan Enter de tiep tuc...]";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -588,7 +618,7 @@ void Menu::readNonEmptyString(const char* prompt, std::string& out) const {
                 exit(0);
             }
             std::cin.clear();
-            //Bỏ qua tất cả ký tự cho đến khi gặp Ente - dọn dẹp buffer
+            //Bỏ qua tất cả ký tự cho đến khi gặp Enter - dọn dẹp buffer
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             continue;
         }

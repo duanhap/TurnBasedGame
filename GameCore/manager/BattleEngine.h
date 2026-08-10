@@ -56,11 +56,11 @@ private:
     CharacterRoster* m_roster; // non-const để gọi findById() mutable
     std::vector<BattleLogEntry> m_battleLog;
 
-    bool findSlot(int characterId, int& outSide, int& outIndex) const;
+    bool findSlot(int characterId, int actorSide, bool preferOpposite, int& outSide, int& outIndex) const;
     //bool getCurrentActorSlot(int& outSide, int& outIndex) const;
     void advanceToNextActor();
     void advanceCursorForSide(int side); // advance cursor riêng của một bên
-    bool isValidTarget(int targetId, int actorSide) const;
+    bool isValidTarget(int targetId, int actorSide, const Character* actor) const;
 };
 
 #endif // BATTLEENGINE_H

@@ -2,8 +2,6 @@
 # teamId|teamName|characterId1,characterId2,...
 10|Red Team|1
 20|Blue Team|2
-30|Alliance Team|3,6,7
-40|Horde II Team|4,5,8
-50|Pro Team|3,10,11
-60|Hackers Team|8,9
+30|Pro Team|3,10,11
+40|Hackers Team|3,9
 

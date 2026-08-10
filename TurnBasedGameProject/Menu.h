@@ -5,6 +5,7 @@
 #include "CharacterRoster.h"
 #include "TeamManager.h"
 #include "BattleEngine.h"
+#include <vector>
 
 class Menu {
 public:
@@ -56,6 +57,8 @@ private:
     bool doStartBattle();
     void doPrintBattleStatus() const;
     void doPrintAliveEnemies(int actorSide) const;
+    // Return a vector of alive enemy Character pointers (current ordering in team slots)
+    std::vector<const Character*> getAliveTargets(int actorSide, const Character* actor) const;
     void doWaitForEnter() const;
 
     // ---------------------------------------------------------------
