@@ -154,6 +154,7 @@
     <ClInclude Include="model\Mage.h" />
     <ClInclude Include="model\Team.h" />
     <ClInclude Include="model\Warrior.h" />
+    <ClInclude Include="model\Archer.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +169,7 @@
     <ClCompile Include="model\Mage.cpp" />
     <ClCompile Include="model\Team.cpp" />
     <ClCompile Include="model\Warrior.cpp" />
+    <ClCompile Include="model\Archer.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
