@@ -30,8 +30,9 @@ TurnBasedGame/                          # Thư mục gốc — mở TurnBasedGam
 │   │   ├── Character.h / .cpp          # Lớp cơ sở trừu tượng Character
 │   │   ├── Warrior.h / .cpp            # Lớp nhân vật Chiến binh
 │   │   ├── Mage.h / .cpp               # Lớp nhân vật Pháp sư
+│   │   ├── Archer.h / .cpp             # Lớp nhân vật Cung thủ
+│   │   ├── Healer.h / .cpp             # Lớp nhân vật Trị liệu sư
 │   │   ├── Team.h / .cpp               # Lớp quản lý Đội hình đơn lẻ
-│   │   ├── CombatantSlot.h / .cpp      # Vị trí chiến đấu trong trận
 │   │   └── Battle.h / .cpp             # Trạng thái trận đấu
 │   ├── manager/                        # Các lớp quản lý nghiệp vụ (Use Cases)
 │   │   ├── CharacterRoster.h / .cpp    # Quản lý kho nhân vật (Roster)
@@ -50,8 +51,12 @@ TurnBasedGame/                          # Thư mục gốc — mở TurnBasedGam
 │   └── TurnBasedGameProject.cpp        # main(), khởi tạo game loop
 │
 ├── TurnBasedGameTestProject/           # [Google Test Project] Unit test cho GameCore
+│   ├── ArcherTest.cpp                  # Test cho Archer
+│   ├── BattleEngineTest.cpp            # Test cho BattleEngine
+│   ├── BattleEngineTest_TC08.cpp       # Test tích hợp BattleEngine
 │   ├── CharacterRosterTest.cpp         # Test cho CharacterRoster
 │   ├── DataFileManagerTest.cpp         # Test cho DataFileManager
+│   ├── HealerTest.cpp                  # Test cho Healer
 │   ├── MageTest.cpp                    # Test cho Mage
 │   ├── TeamManagerTest.cpp             # Test cho TeamManager
 │   ├── WarriorTest.cpp                 # Test cho Warrior
@@ -63,7 +68,6 @@ TurnBasedGame/                          # Thư mục gốc — mở TurnBasedGam
 ├── .gitignore
 ├── .gitattributes
 ├── code_workflow.md                    # Quy trình làm việc nhóm
-├── console_input_test_cases.md         # Bộ test case kiểm thử input trên Console
 └── README.md
 ```
 
@@ -178,14 +182,17 @@ Nhằm đảm bảo cân bằng game và độ ổn định hệ thống, các r
 
 ## 🎯 Danh Sách Tính Năng Đã Hoàn Thành
 Hệ thống đã triển khai đầy đủ các yêu cầu chức năng cốt lõi theo mô hình 3 lớp:
-1. **Quản lý Nhân vật (Character Roster):** CRUD nhân vật, tìm kiếm nhân vật theo ID hoặc tên (không phân biệt chữ hoa/thường).
+1. **Quản lý Nhân vật (Character Roster):** CRUD nhân vật, tìm kiếm nhân vật theo ID hoặc tên (không phân biệt chữ hoa/thường). Hỗ trợ 4 class nhân vật:
+   - **Warrior:** Tấn công cận chiến vật lý.
+   - **Mage:** Tấn công phép thuật bằng mana, tự động đánh thường (sát thương nhỏ) khi cạn mana.
+   - **Archer:** Tích sát thương qua các lượt (lượt 1-2 bắn thường, lượt 3 bắn chí mạng gấp đôi sát thương).
+   - **Healer:** Có khả năng hồi HP cho bản thân hoặc đồng đội bị thương (không vượt quá HP tối đa).
 2. **Quản lý Đội hình (Team Manager):** CRUD đội hình, đổi tên đội hình, thêm/xóa thành viên. Tự động xóa nhân vật khỏi tất cả các đội hình nếu nhân vật đó bị xóa khỏi Roster (cascade delete).
-3. **Động cơ Trận đấu (Battle Engine):** Ghép đội, bắt đầu trận, lượt đấu luân phiên đa hình (Warrior đánh cận chiến, Mage dùng phép thuật hoặc tự động đánh thường dự phòng khi hết mana), xác định đội chiến thắng.
+3. **Động cơ Trận đấu (Battle Engine):** Ghép đội, bắt đầu trận, lượt đấu luân phiên đa hình của các nhân vật, tích hợp **Nhật ký trận đấu (Battle Log)** để lưu trữ và hiển thị chi tiết diễn biến từng lượt đấu, xác định đội chiến thắng.
 4. **Quản lý Tệp Dữ liệu (Data File Manager):** Tải và lưu trữ dữ liệu nhân vật/đội hình từ file `.txt`. Có cơ chế bỏ qua các dòng dữ liệu lỗi định dạng và ghi log chi tiết lý do lỗi ra console mà không làm dừng chương trình.
 5. **Giao Diện Console UI Hướng Người Dùng:**
    * Tiện ích chống crash: Tự động xóa cờ lỗi, dọn hàng đợi dữ liệu khi người dùng nhập sai định dạng hoặc số quá lớn.
    * Xử lý tín hiệu thoát: Phát hiện tổ hợp phím EOF (`Ctrl + Z`) để lưu dữ liệu và thoát game an toàn.
-   * Đầy đủ bộ tài liệu kiểm thử input: [console_input_test_cases.md](file:///d:/FPT/Mock/TurnBasedGame/console_input_test_cases.md).
 
 ---
 
