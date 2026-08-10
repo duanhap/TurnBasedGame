@@ -3,7 +3,7 @@
 
 
 Healer::Healer(int id, std::string name, unsigned int maxHp, unsigned int healingPower)
-		: Character(id, name, maxHp, "Healer"), healingPower(healingPower)
+		: Character(id, name, maxHp, "HEALER"), healingPower(healingPower)
 {
 }
 
@@ -25,7 +25,7 @@ bool Healer::setHealingPower(unsigned int newHealingPower)
 void Healer::display() const
 {
 	Character::display();
-	std::cout << " | Healing Power=" << healingPower << std::endl;
+	std::cout << "Healing Power=" << healingPower << std::endl;
 }
 
 

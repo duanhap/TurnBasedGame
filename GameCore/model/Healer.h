@@ -6,6 +6,8 @@
 Author: Nguyen Dinh Dung
 Last modified: 2026-08-10
 */
+const unsigned int HEALER_HEALING_POWER_UPPER = 500;
+const unsigned int HEALER_HEALING_POWER_LOWER = 1;
 
 class Healer :
     public Character

@@ -2,6 +2,8 @@
 #include "DataFileManager.h"
 #include "Warrior.h"
 #include "Mage.h"
+#include "Archer.h"
+#include "Healer.h"
 #include "Battle.h"
 #include <iostream>
 #include <limits>
@@ -12,7 +14,7 @@
 
 /*
 Contributors: Nguyen Dinh Dung, 
-Last modified: 2026-08-07
+Last modified: 2026-08-10
 */
 static const int LOADING_DELAY_MS = 500;
 
@@ -109,7 +111,9 @@ void Menu::doAddCharacter() {
     std::cout << "\n-- Them nhan vat moi --\n";
     std::cout << "  1. Warrior\n";
     std::cout << "  2. Mage\n";
-    int typeChoice = readInt("Chon loai: ", 1, 2);
+    std::cout << "  3. Archer\n";
+    std::cout << "  4. Healer\n";
+    int typeChoice = readInt("Chon loai: ", 1, 4);
 
     int id = readInt("Nhap ID (so nguyen duong): ", 1, std::numeric_limits<int>::max());
 
@@ -129,8 +133,7 @@ void Menu::doAddCharacter() {
         } else {
             std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
         }
-    } else {
-        // Use Mage constants from Mage.h to validate ranges
+    } else if (typeChoice == 2) {
         int maxMana = readInt(("Nhap maxMana (" + std::to_string(MAGE_MANA_LOWER) + " - " + std::to_string(MAGE_MANA_UPPER) + "): ").c_str(),
                               static_cast<int>(MAGE_MANA_LOWER), static_cast<int>(MAGE_MANA_UPPER));
         int spellDamage = readInt(("Nhap spellDamage (" + std::to_string(MAGE_SPELL_DAMAGE_LOWER) + " - " + std::to_string(MAGE_SPELL_DAMAGE_UPPER) + "): ").c_str(),
@@ -146,6 +149,30 @@ void Menu::doAddCharacter() {
         int result = m_roster.add(std::move(mage));
         if (result != -1) {
             std::cout << "[OK] Da them Mage: " << name << " (ID=" << result << ")\n";
+        } else {
+            std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
+        }
+    } else if (typeChoice == 3) {
+        // Archer
+        int normalDamage = readInt(("Nhap normalDamage (" + std::to_string(ARCHER_NORMAL_DAMAGE_LOWER) + " - " + std::to_string(ARCHER_NORMAL_DAMAGE_UPPER) + "): ").c_str(),
+                                   static_cast<int>(ARCHER_NORMAL_DAMAGE_LOWER), static_cast<int>(ARCHER_NORMAL_DAMAGE_UPPER));
+        int criticalDamage = readInt(("Nhap criticalDamage (" + std::to_string(ARCHER_CRITICAL_DAMAGE_LOWER) + " - " + std::to_string(ARCHER_CRITICAL_DAMAGE_UPPER) + "): ").c_str(),
+                                     static_cast<int>(ARCHER_CRITICAL_DAMAGE_LOWER), static_cast<int>(ARCHER_CRITICAL_DAMAGE_UPPER));
+
+        auto archer = std::make_unique<Archer>(id, name, (unsigned int)maxHp, "ARCHER", normalDamage, criticalDamage);
+        int result = m_roster.add(std::move(archer));
+        if (result != -1) {
+            std::cout << "[OK] Da them Archer: " << name << " (ID=" << result << ")\n";
+        } else {
+            std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
+        }
+    } else {
+        // Healer
+        int healingPower = readInt("Nhap healingPower (> 0): ", 1, std::numeric_limits<int>::max());
+        auto healer = std::make_unique<Healer>(id, name, (unsigned int)maxHp, (unsigned int)healingPower);
+        int result = m_roster.add(std::move(healer));
+        if (result != -1) {
+            std::cout << "[OK] Da them Healer: " << name << " (ID=" << result << ")\n";
         } else {
             std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
         }
@@ -171,24 +198,40 @@ void Menu::doEditCharacter() {
                               static_cast<int>(CHARACTER_MAX_HP_LOWER), static_cast<int>(CHARACTER_MAX_HP_UPPER));
 
     bool ok = false;
-  
-    if (ch->getType() == "WARRIOR") {
+
+    // Detect concrete class using dynamic_cast
+    if (dynamic_cast<const Warrior*>(ch)) {
         int attackPower = readInt(("attackPower moi (" + std::to_string(WARRIOR_ATTACK_POWER_LOWER) + " - " + std::to_string(WARRIOR_ATTACK_POWER_UPPER) + "): ").c_str(),
                               static_cast<int>(WARRIOR_ATTACK_POWER_LOWER), static_cast<int>(WARRIOR_ATTACK_POWER_UPPER));
         ok = m_roster.updateWarrior(id, newName, newMaxHp, attackPower);
-
+    }
+    else if (dynamic_cast<const Mage*>(ch)) {
+        int maxMana = readInt(("maxMana moi (" + std::to_string(MAGE_MANA_LOWER) + " - " + std::to_string(MAGE_MANA_UPPER) + "): ").c_str(),
+                              static_cast<int>(MAGE_MANA_LOWER), static_cast<int>(MAGE_MANA_UPPER));
+        int spellDamage = readInt(("spellDamage moi (" + std::to_string(MAGE_SPELL_DAMAGE_LOWER) + " - " + std::to_string(MAGE_SPELL_DAMAGE_UPPER) + "): ").c_str(),
+                                  static_cast<int>(MAGE_SPELL_DAMAGE_LOWER), static_cast<int>(MAGE_SPELL_DAMAGE_UPPER));
+        int manaCost = readInt(("manaCost moi (" + std::to_string(MAGE_MANA_COST_LOWER) + " - " + std::to_string(MAGE_MANA_COST_UPPER) + "): ").c_str(),
+                               static_cast<int>(MAGE_MANA_COST_LOWER), static_cast<int>(MAGE_MANA_COST_UPPER));
+        int fallbackDamage = readInt(("fallbackDamage moi (" + std::to_string(MAGE_FALLBACK_DAMAGE_LOWER) + " - " + std::to_string(MAGE_FALLBACK_DAMAGE_UPPER) + "): ").c_str(),
+                                     static_cast<int>(MAGE_FALLBACK_DAMAGE_LOWER), static_cast<int>(MAGE_FALLBACK_DAMAGE_UPPER));
+        ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
+    }
+    else if (dynamic_cast<const Archer*>(ch)) {
+        int normalDamage = readInt(("normalDamage moi (" + std::to_string(ARCHER_NORMAL_DAMAGE_LOWER) + " - " + std::to_string(ARCHER_NORMAL_DAMAGE_UPPER) + "): ").c_str(),
+                                   static_cast<int>(ARCHER_NORMAL_DAMAGE_LOWER), static_cast<int>(ARCHER_NORMAL_DAMAGE_UPPER));
+        int criticalDamage = readInt(("criticalDamage moi (" + std::to_string(ARCHER_CRITICAL_DAMAGE_LOWER) + " - " + std::to_string(ARCHER_CRITICAL_DAMAGE_UPPER) + "): ").c_str(),
+                                     static_cast<int>(ARCHER_CRITICAL_DAMAGE_LOWER), static_cast<int>(ARCHER_CRITICAL_DAMAGE_UPPER));
+        ok = m_roster.updateArcher(id, newName, newMaxHp, normalDamage, criticalDamage);
+    }
+    else if (dynamic_cast<const Healer*>(ch)) {
+        int maxMahealingPowerna = readInt(("healingPower moi (" + std::to_string(HEALER_HEALING_POWER_LOWER) + " - " + std::to_string(HEALER_HEALING_POWER_UPPER) + "): ").c_str(),
+                              static_cast<int>(HEALER_HEALING_POWER_LOWER), static_cast<int>(HEALER_HEALING_POWER_UPPER));
+        int healingPower = readInt("healingPower moi (> 0): ", 1, std::numeric_limits<int>::max());
+        ok = m_roster.updateHealer(id, newName, newMaxHp, healingPower);
     }
     else {
-        // Use Mage constants for edit validation as well
-        int maxMana = readInt(("maxMana moi (" + std::to_string(MAGE_MANA_LOWER) + " - " + std::to_string(MAGE_MANA_UPPER) + "): ").c_str(),
-                            static_cast<int>(MAGE_MANA_LOWER), static_cast<int>(MAGE_MANA_UPPER));
-        int spellDamage = readInt(("spellDamage moi (" + std::to_string(MAGE_SPELL_DAMAGE_LOWER) + " - " + std::to_string(MAGE_SPELL_DAMAGE_UPPER) + "): ").c_str(),
-                                static_cast<int>(MAGE_SPELL_DAMAGE_LOWER), static_cast<int>(MAGE_SPELL_DAMAGE_UPPER));
-        int manaCost = readInt(("manaCost moi (" + std::to_string(MAGE_MANA_COST_LOWER) + " - " + std::to_string(MAGE_MANA_COST_UPPER) + "): ").c_str(),
-                            static_cast<int>(MAGE_MANA_COST_LOWER), static_cast<int>(MAGE_MANA_COST_UPPER));
-        int fallbackDamage = readInt(("fallbackDamage moi (" + std::to_string(MAGE_FALLBACK_DAMAGE_LOWER) + " - " + std::to_string(MAGE_FALLBACK_DAMAGE_UPPER) + "): ").c_str(),
-                                    static_cast<int>(MAGE_FALLBACK_DAMAGE_LOWER), static_cast<int>(MAGE_FALLBACK_DAMAGE_UPPER));
-        ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
+        std::cout << "[LOI] Loai nhan vat khong ho tro cho chuc nang chinh sua.\n";
+        return;
     }
 
     if (ok) {
@@ -545,7 +588,7 @@ void Menu::readNonEmptyString(const char* prompt, std::string& out) const {
                 exit(0);
             }
             std::cin.clear();
-            //Bỏ qua tất cả ký tự cho đến khi gặp Enter.
+            //Bỏ qua tất cả ký tự cho đến khi gặp Ente - dọn dẹp buffer
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             continue;
         }

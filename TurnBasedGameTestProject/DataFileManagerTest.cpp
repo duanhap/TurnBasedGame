@@ -3,6 +3,8 @@
 #include "../GameCore/manager/CharacterRoster.h"
 #include "../GameCore/model/Warrior.h"
 #include "../GameCore/model/Mage.h"
+#include "../GameCore/model/Archer.h"
+#include "../GameCore/model/Healer.h"
 #include <fstream>
 #include <sstream>
 #include <cstdio>
@@ -43,6 +45,16 @@ static std::unique_ptr<Mage> makeMage(int id, const std::string& name, unsigned 
     unsigned int maxMana, unsigned int spellDmg, unsigned int manaCost, unsigned int fallback)
 {
     return std::make_unique<Mage>(id, name, hp, "MAGE", maxMana, spellDmg, manaCost, fallback);
+}
+
+static std::unique_ptr<Archer> makeArcher(int id, const std::string& name, unsigned int hp, unsigned int normalDamage, unsigned int criticalDamage)
+{
+    return std::make_unique<Archer>(id, name, hp, "ARCHER", static_cast<int>(normalDamage), static_cast<int>(criticalDamage));
+}
+
+static std::unique_ptr<Healer> makeHealer(int id, const std::string& name, unsigned int hp, unsigned int healingPower)
+{
+    return std::make_unique<Healer>(id, name, hp, healingPower);
 }
 
 
@@ -90,6 +102,51 @@ TEST(DataFileManagerLoadCharactersTest, Load_ValidMage_AddsToRoster)
     EXPECT_EQ(m->getSpellDamage(), 40u);
     EXPECT_EQ(m->getManaCost(), 10u);
     EXPECT_EQ(m->getFallbackDamage(), 5u);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
+TEST(DataFileManagerLoadCharactersTest, Load_ValidArcher_AddsToRoster)
+{
+    // Arrange
+    std::string filepath = createTempFile("ARCHER|201|Robin|90|30|60\n");
+    CharacterRoster roster;
+    // Act
+    bool result = DataFileManager::loadCharacters(filepath, roster);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(roster.size(), 1);
+    const Character* c = roster.findById(201);
+    ASSERT_NE(c, nullptr);
+    EXPECT_EQ(c->getName(), "Robin");
+    EXPECT_EQ(c->getMaxHp(), 90);
+    EXPECT_EQ(c->getType(), "ARCHER");
+    const Archer* a = dynamic_cast<const Archer*>(c);
+    ASSERT_NE(a, nullptr);
+    EXPECT_EQ(a->getNormalDamage(), 30u);
+    EXPECT_EQ(a->getCriticalDamage(), 60u);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
+TEST(DataFileManagerLoadCharactersTest, Load_ValidHealer_AddsToRoster)
+{
+    // Arrange
+    std::string filepath = createTempFile("HEALER|202|Asha|70|20\n");
+    CharacterRoster roster;
+    // Act
+    bool result = DataFileManager::loadCharacters(filepath, roster);
+    // Assert
+    EXPECT_TRUE(result);
+    EXPECT_EQ(roster.size(), 1);
+    const Character* c = roster.findById(202);
+    ASSERT_NE(c, nullptr);
+    EXPECT_EQ(c->getName(), "Asha");
+    EXPECT_EQ(c->getMaxHp(), 70);
+    EXPECT_EQ(c->getType(), "HEALER");
+    const Healer* h = dynamic_cast<const Healer*>(c);
+    ASSERT_NE(h, nullptr);
+    EXPECT_EQ(h->getHealingPower(), 20u);
     // Cleanup
     std::remove(filepath.c_str());
 }
@@ -245,10 +302,42 @@ TEST(DataFileManagerLoadCharactersTest, Load_MageWrongFieldCount_SkipsLine)
     std::remove(filepath.c_str());
 }
 
+TEST(DataFileManagerLoadCharactersTest, Load_ArcherWrongFieldCount_SkipsLine)
+{
+    // Arrange
+    std::string content =
+        "ARCHER|1|Robin|90\n"             // too few fields (should be 6 tokens)
+        "ARCHER|2|Tristan|90|30|60|10|5|extra\n";    // too many fields (extra tokens)
+    std::string filepath = createTempFile(content);
+    CharacterRoster roster;
+    // Act
+    DataFileManager::loadCharacters(filepath, roster);
+    // Assert
+    EXPECT_EQ(roster.size(), 0);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
+TEST(DataFileManagerLoadCharactersTest, Load_HealerWrongFieldCount_SkipsLine)
+{
+    // Arrange
+    std::string content =
+        "HEALER|1|Asha|70\n"             // too few fields (should be 5 tokens)
+        "HEALER|2|Lior|70|20|extra\n";    // too many fields (extra tokens)
+    std::string filepath = createTempFile(content);
+    CharacterRoster roster;
+    // Act
+    DataFileManager::loadCharacters(filepath, roster);
+    // Assert
+    EXPECT_EQ(roster.size(), 0);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
 TEST(DataFileManagerLoadCharactersTest, Load_UnknownType_SkipsLine)
 {
     // Arrange
-    std::string content = "ARCHER|1|Robin|100|50\n";
+    std::string content = "SORCERER|1|Gandalf|100|50\n";
     std::string filepath = createTempFile(content);
     CharacterRoster roster;
     // Act
@@ -377,12 +466,46 @@ TEST(DataFileManagerSaveCharactersTest, Save_SingleMage_WritesCorrectFormat)
     std::remove(filepath.c_str());
 }
 
+TEST(DataFileManagerSaveCharactersTest, Save_SingleArcher_WritesCorrectFormat)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeArcher(201, "Robin", 90, 30, 60));
+    std::string filepath = (std::filesystem::temp_directory_path() / "test_save_chars.txt").string();
+    // Act
+    bool result = DataFileManager::saveCharacters(filepath, roster);
+    // Assert
+    EXPECT_TRUE(result);
+    std::string content = readFileContent(filepath);
+    EXPECT_NE(content.find("ARCHER|201|Robin|90|30|60"), std::string::npos);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
+TEST(DataFileManagerSaveCharactersTest, Save_SingleHealer_WritesCorrectFormat)
+{
+    // Arrange
+    CharacterRoster roster;
+    roster.add(makeHealer(202, "Asha", 70, 20));
+    std::string filepath = (std::filesystem::temp_directory_path() / "test_save_chars.txt").string();
+    // Act
+    bool result = DataFileManager::saveCharacters(filepath, roster);
+    // Assert
+    EXPECT_TRUE(result);
+    std::string content = readFileContent(filepath);
+    EXPECT_NE(content.find("HEALER|202|Asha|70|20"), std::string::npos);
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
 TEST(DataFileManagerSaveCharactersTest, Save_MixedCharacters_WritesAll)
 {
     // Arrange
     CharacterRoster roster;
     roster.add(makeWarrior(101, "Ares", 100, 30));
     roster.add(makeMage(102, "Luna", 80, 10, 40, 10, 10));
+    roster.add(makeArcher(201, "Robin", 90, 30, 60));
+    roster.add(makeHealer(202, "Asha", 70, 20));
     std::string filepath = (std::filesystem::temp_directory_path() / "test_save_chars.txt").string();
     // Act
     bool result = DataFileManager::saveCharacters(filepath, roster);
@@ -391,6 +514,8 @@ TEST(DataFileManagerSaveCharactersTest, Save_MixedCharacters_WritesAll)
     std::string content = readFileContent(filepath);
     EXPECT_NE(content.find("WARRIOR|101|Ares|100|30"), std::string::npos);
     EXPECT_NE(content.find("MAGE|102|Luna|80|10|40|10|10"), std::string::npos);
+    EXPECT_NE(content.find("ARCHER|201|Robin|90|30|60"), std::string::npos);
+    EXPECT_NE(content.find("HEALER|202|Asha|70|20"), std::string::npos);
     // Cleanup
     std::remove(filepath.c_str());
 }
@@ -434,6 +559,8 @@ TEST(DataFileManagerSaveCharactersTest, Save_IncludesCommentHeaders)
     EXPECT_NE(content.find("# Dinh dang du lieu Nhan vat"), std::string::npos);
     EXPECT_NE(content.find("# WARRIOR|id|name|maxHp|attackPower"), std::string::npos);
     EXPECT_NE(content.find("# MAGE|id|name|maxHp|maxMana|spellDamage|manaCost|fallbackDamage"), std::string::npos);
+    EXPECT_NE(content.find("# ARCHER|id|name|maxHp|normalDamage|criticalDamage"), std::string::npos);
+    EXPECT_NE(content.find("# HEALER|id|name|maxHp|healingPower"), std::string::npos);
     // Cleanup
     std::remove(filepath.c_str());
 }
@@ -506,13 +633,63 @@ TEST(DataFileManagerRoundTripTest, SaveThenLoad_PreservesMageData)
     std::remove(filepath.c_str());
 }
 
+TEST(DataFileManagerRoundTripTest, SaveThenLoad_PreservesArcherData)
+{
+    // Arrange: build a roster, save it, then load into a new roster
+    CharacterRoster original;
+    original.add(makeArcher(301, "Legolas", 110, 40, 80));
+    std::string filepath = (std::filesystem::temp_directory_path() / "test_roundtrip_archer.txt").string();
+
+    // Act: save then load
+    DataFileManager::saveCharacters(filepath, original);
+    CharacterRoster loaded;
+    DataFileManager::loadCharacters(filepath, loaded);
+
+    // Assert
+    EXPECT_EQ(loaded.size(), 1);
+    const Archer* a = dynamic_cast<const Archer*>(loaded.findById(301));
+    ASSERT_NE(a, nullptr);
+    EXPECT_EQ(a->getName(), "Legolas");
+    EXPECT_EQ(a->getMaxHp(), 110);
+    EXPECT_EQ(a->getNormalDamage(), 40u);
+    EXPECT_EQ(a->getCriticalDamage(), 80u);
+
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
+TEST(DataFileManagerRoundTripTest, SaveThenLoad_PreservesHealerData)
+{
+    // Arrange
+    CharacterRoster original;
+    original.add(makeHealer(302, "Mercy", 95, 25));
+    std::string filepath = (std::filesystem::temp_directory_path() / "test_roundtrip_healer.txt").string();
+
+    // Act
+    DataFileManager::saveCharacters(filepath, original);
+    CharacterRoster loaded;
+    DataFileManager::loadCharacters(filepath, loaded);
+
+    // Assert
+    EXPECT_EQ(loaded.size(), 1);
+    const Healer* h = dynamic_cast<const Healer*>(loaded.findById(302));
+    ASSERT_NE(h, nullptr);
+    EXPECT_EQ(h->getName(), "Mercy");
+    EXPECT_EQ(h->getMaxHp(), 95);
+    EXPECT_EQ(h->getHealingPower(), 25u);
+
+    // Cleanup
+    std::remove(filepath.c_str());
+}
+
 TEST(DataFileManagerRoundTripTest, SaveThenLoad_MixedCharacters_FullRoundTrip)
 {
     // Arrange
     CharacterRoster original;
     original.add(makeWarrior(101, "Ares", 100, 30));
     original.add(makeMage(102, "Luna", 80, 10, 40, 10, 10));
-    original.add(makeWarrior(103, "Thor", 150, 45));
+    original.add(makeArcher(201, "Robin", 90, 30, 60));
+    original.add(makeHealer(202, "Asha", 70, 20));
     std::string filepath = (std::filesystem::temp_directory_path() / "test_roundtrip.txt").string();
 
     // Act
@@ -521,15 +698,17 @@ TEST(DataFileManagerRoundTripTest, SaveThenLoad_MixedCharacters_FullRoundTrip)
     DataFileManager::loadCharacters(filepath, loaded);
 
     // Assert
-    EXPECT_EQ(loaded.size(), 3);
+    EXPECT_EQ(loaded.size(), 4);
     EXPECT_NE(loaded.findById(101), nullptr);
     EXPECT_NE(loaded.findById(102), nullptr);
-    EXPECT_NE(loaded.findById(103), nullptr);
+    EXPECT_NE(loaded.findById(201), nullptr);
+    EXPECT_NE(loaded.findById(202), nullptr);
 
     // Verify types are correct
     EXPECT_NE(dynamic_cast<const Warrior*>(loaded.findById(101)), nullptr);
     EXPECT_NE(dynamic_cast<const Mage*>(loaded.findById(102)), nullptr);
-    EXPECT_NE(dynamic_cast<const Warrior*>(loaded.findById(103)), nullptr);
+    EXPECT_NE(dynamic_cast<const Archer*>(loaded.findById(201)), nullptr);
+    EXPECT_NE(dynamic_cast<const Healer*>(loaded.findById(202)), nullptr);
 
     // Cleanup
     std::remove(filepath.c_str());
