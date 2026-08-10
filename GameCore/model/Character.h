@@ -34,6 +34,8 @@ public:
 	// setter
 	bool setName(const std::string& newName);
 	bool setMaxHp(unsigned int newMaxHp);
+	/// Hồi máu nhân vật
+	bool heal(unsigned int amount);
 	// display
 	virtual void display() const;
 

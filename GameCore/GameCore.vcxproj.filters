@@ -63,7 +63,7 @@
     <ClInclude Include="manager\TeamManager.h">
       <Filter>Header Files\manager</Filter>
     </ClInclude>
-    <ClInclude Include="Healer.h">
+    <ClInclude Include="model\Healer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,7 +104,7 @@
     <ClCompile Include="manager\TeamManager.cpp">
       <Filter>Source Files\manager</Filter>
     </ClCompile>
-    <ClCompile Include="Healer.cpp">
+    <ClCompile Include="model\Healer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

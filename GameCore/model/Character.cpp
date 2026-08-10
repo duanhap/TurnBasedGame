@@ -47,6 +47,22 @@ bool Character::isAlive() const
 	return currentHp > 0;
 }
 
+
+bool Character::heal(unsigned int amount)
+{
+	if (amount == 0) return false; // Không hồi máu nếu amount = 0
+	if (currentHp + amount > maxHp) 
+	{
+		currentHp = maxHp;
+	}
+	else 
+	{
+		currentHp += amount;
+	}
+	return true;
+}
+
+
 void Character::reduceHp(unsigned int amount)
 {
 	if (amount >= currentHp) {
