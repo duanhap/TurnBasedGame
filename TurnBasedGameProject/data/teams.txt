@@ -2,6 +2,7 @@
 # teamId|teamName|characterId1,characterId2,...
 10|Red Team|1
 20|Blue Team|2
-30|Pro Team|3,10,11
-40|Hackers Team|3,9
+30|Green Team|1,2
+40|Pro Team|3,10,11
+50|Hackers Team|4,9
 

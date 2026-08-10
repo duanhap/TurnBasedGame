@@ -11,6 +11,7 @@
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <unordered_set> // added for overlap check
 
 /*
 Contributors: Nguyen Dinh Dung, 
@@ -514,6 +515,18 @@ bool Menu::doSelectTeams() {
     if (teamB == nullptr) {
        std::cout << "[LOI] Khong tim thay Team ID=" << idB << "\n";
        return false;
+    }
+
+    // Quick client-side validation: ensure teams do not share any character IDs
+    {
+        std::unordered_set<int> idsA;
+        for (int cid : teamA->getCharacterIds()) idsA.insert(cid);
+        for (int cid : teamB->getCharacterIds()) {
+            if (idsA.count(cid)) {
+                std::cout << "[LOI] Khong the chon: Team A va Team B chia se cung mot character (ID=" << cid << ").\n";
+                return false;
+            }
+        }
     }
 
     // Validation: hai Team khác nhau, không rỗng (FR-03 / TC-06)
