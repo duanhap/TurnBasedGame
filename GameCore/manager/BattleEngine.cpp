@@ -53,14 +53,9 @@ bool BattleEngine::performCurrentAction(int targetCharacterId) {
 
     if (!isValidTarget(targetCharacterId, actorSide, actorChar))
         return false;
+
     int targetSide = -1, targetIndex = -1;
-    // Determine preference for which instance to pick when same character id
-    // exists on both teams. Healers should prefer same-side (to heal allies),
-    // other classes prefer opposite-side (to attack enemies).
-    bool preferOpposite = true;
-    std::string actorType = actorChar->getType();
-    if (actorType == "HEALER" || actorType == "Healer") preferOpposite = false;
-    if (!findSlot(targetCharacterId, actorSide, preferOpposite, targetSide, targetIndex))
+    if (!findSlot(targetCharacterId, targetSide, targetIndex))
         return false;
     Character* targetChar = m_battle.getSlot(targetSide, targetIndex);
     if (targetChar == nullptr) return false;
@@ -173,27 +168,13 @@ void BattleEngine::printStatus(const CharacterRoster& roster) const {
     if (!m_battleLog.empty()) {
         std::cout << "\n--- BATTLE LOG ---\n";
         for (const auto& entry : m_battleLog) {
-            // Determine actor's team name
-            int aSide = -1, aIndex = -1;
-            std::string aTeam = "Unknown";
-            if (findSlot(entry.actorId, -1, false, aSide, aIndex)) {
-                aTeam = (aSide == 0) ? m_battle.getTeamAName() : m_battle.getTeamBName();
-            }
-
-            // Determine target's team name
-            int tSide = -1, tIndex = -1;
-            std::string tTeam = "Unknown";
-            if (findSlot(entry.targetId, -1, false, tSide, tIndex)) {
-                tTeam = (tSide == 0) ? m_battle.getTeamAName() : m_battle.getTeamBName();
-            }
-
-            std::cout << "[Luot " << entry.turnNumber << "] "
-                      << entry.actorName << " (" << aTeam << ") ";
+            std::cout << "[Luot " << entry.turnNumber << "] " 
+                      << entry.actorName << " (ID: " << entry.actorId << ") ";
             if (entry.actionType == "DAMAGE") {
-                std::cout << "tan cong " << entry.targetName << " (" << tTeam << ") ";
+                std::cout << "tan cong " << entry.targetName << " (ID: " << entry.targetId << ") ";
                 std::cout << "gay " << entry.value << " sat thuong. ";
             } else if (entry.actionType == "HEAL") {
-                std::cout << "hoi HP cho " << entry.targetName << " (" << tTeam << ") ";
+                std::cout << "hoi HP cho " << entry.targetName << " (ID: " << entry.targetId << ") ";
                 std::cout << "them " << entry.value << " HP. ";
             }
             std::cout << "-> Trang thai sau hanh dong: " << entry.targetName
@@ -204,81 +185,38 @@ void BattleEngine::printStatus(const CharacterRoster& roster) const {
     }
 }
 
-bool BattleEngine::findSlot(int characterId, int actorSide, bool preferOpposite, int& outSide, int& outIndex) const {
-    // Scan both sides and record up to two matches. If character appears in both
-    // teams (same id), prefer the slot on the opposite side of the actor when
-    // actorSide is provided.
-    int firstSide = -1, firstIndex = -1;
-    int secondSide = -1, secondIndex = -1;
+bool BattleEngine::findSlot(int characterId, int& outSide, int& outIndex) const {
     for (int side = 0; side < 2; ++side) {
         int size = (side == 0) ? m_battle.getSizeA() : m_battle.getSizeB();
         for (int i = 0; i < size; ++i) {
             const Character* ch = m_battle.getSlot(side, i);
             if (ch != nullptr && ch->getId() == characterId) {
-                if (firstSide == -1) {
-                    firstSide = side; firstIndex = i;
-                } else {
-                    secondSide = side; secondIndex = i;
-                }
-            }
-        }
-    }
-    if (firstSide == -1) return false;
-    if (secondSide == -1) {
-        outSide = firstSide;
-        outIndex = firstIndex;
-        return true;
-    }
-    // Two matches found. If actorSide provided, prefer according to preferOpposite.
-    if (actorSide == 0 || actorSide == 1) {
-        if (preferOpposite) {
-            if (firstSide == actorSide) {
-                outSide = secondSide; outIndex = secondIndex;
-                return true;
-            } else if (secondSide == actorSide) {
-                outSide = firstSide; outIndex = firstIndex;
-                return true;
-            }
-        } else {
-            // prefer same side
-            if (firstSide == actorSide) {
-                outSide = firstSide; outIndex = firstIndex;
-                return true;
-            } else if (secondSide == actorSide) {
-                outSide = secondSide; outIndex = secondIndex;
+                outSide = side;
+                outIndex = i;
                 return true;
             }
         }
     }
-    // Fallback: return first found
-    outSide = firstSide;
-    outIndex = firstIndex;
-    return true;
+    return false;
 }
 
 bool BattleEngine::isValidTarget(int targetId, int actorSide, const Character* actor) const {
     int tSide = -1, tIndex = -1;
-    // Decide preference to pick which instance of the id to validate against.
-    bool preferOpposite = true;
-    if (actor != nullptr) {
-        std::string actorType = actor->getType();
-        if (actorType == "HEALER" || actorType == "Healer") preferOpposite = false;
-    }
-    if (!findSlot(targetId, actorSide, preferOpposite, tSide, tIndex)) return false;
+    if (!findSlot(targetId, tSide, tIndex)) return false;
     const Character* ch = m_battle.getSlot(tSide, tIndex);
     if (ch == nullptr || !ch->isAlive()) return false;
     // Default: cannot target same side (cannot attack ally)
-    // Healer can target allies (to heal) but should not heal opponents.
-    if (actor == nullptr) {
-        // conservative default
-        return tSide != actorSide;
-    }
+        // Healer can target allies (to heal) but should not heal opponents
+        if (actor == nullptr) {
+            // conservative default
+            return tSide != actorSide;
+        }
     std::string actorType = actor->getType();
     if (actorType == "HEALER" || actorType == "Healer") {
         // Healer may target allies (same side) but not opponents
-        return tSide == actorSide;
+         return tSide == actorSide;
     }
-    // Other classes: must target opponent
+    // Other classes: must target opponent*
     return tSide != actorSide;
 }
 
