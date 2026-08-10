@@ -116,11 +116,12 @@ void Menu::doAddCharacter() {
     std::string name;
     readNonEmptyString("Nhap ten nhan vat: ", name);
 
-    int maxHp = readInt("Nhap maxHp (> 0): ", 1, std::numeric_limits<int>::max());
+    int maxHp = readInt(("Nhap maxHp (" + std::to_string(CHARACTER_MAX_HP_LOWER) + " - " + std::to_string(CHARACTER_MAX_HP_UPPER) + "): ").c_str(),
+                              static_cast<int>(CHARACTER_MAX_HP_LOWER), static_cast<int>(CHARACTER_MAX_HP_UPPER));
 
     if (typeChoice == 1) {
-        int attackPower = readInt("Nhap attackPower (> 0): ", 1, std::numeric_limits<int>::max());
-
+        int attackPower = readInt(("Nhap attackPower (" + std::to_string(WARRIOR_ATTACK_POWER_LOWER) + " - " + std::to_string(WARRIOR_ATTACK_POWER_UPPER) + "): ").c_str(),
+                              static_cast<int>(WARRIOR_ATTACK_POWER_LOWER), static_cast<int>(WARRIOR_ATTACK_POWER_UPPER));
         auto warrior = std::make_unique<Warrior>(id, name, (unsigned int)maxHp, "WARRIOR", attackPower);
         int result = m_roster.add(std::move(warrior));
         if (result != -1) {
@@ -129,10 +130,15 @@ void Menu::doAddCharacter() {
             std::cout << "[LOI] Khong the them nhan vat (ID trung hoac chi so khong hop le).\n";
         }
     } else {
-        int maxMana = readInt("Nhap maxMana (> 0): ", 1, std::numeric_limits<int>::max());
-        int spellDamage = readInt("Nhap spellDamage (> 0): ", 1, std::numeric_limits<int>::max());
-        int manaCost = readInt("Nhap manaCost (> 0): ", 1, std::numeric_limits<int>::max());
-        int fallbackDamage = readInt("Nhap fallbackDamage (> 0): ", 1, std::numeric_limits<int>::max());
+        // Use Mage constants from Mage.h to validate ranges
+        int maxMana = readInt(("Nhap maxMana (" + std::to_string(MAGE_MANA_LOWER) + " - " + std::to_string(MAGE_MANA_UPPER) + "): ").c_str(),
+                              static_cast<int>(MAGE_MANA_LOWER), static_cast<int>(MAGE_MANA_UPPER));
+        int spellDamage = readInt(("Nhap spellDamage (" + std::to_string(MAGE_SPELL_DAMAGE_LOWER) + " - " + std::to_string(MAGE_SPELL_DAMAGE_UPPER) + "): ").c_str(),
+                                  static_cast<int>(MAGE_SPELL_DAMAGE_LOWER), static_cast<int>(MAGE_SPELL_DAMAGE_UPPER));
+        int manaCost = readInt(("Nhap manaCost (" + std::to_string(MAGE_MANA_COST_LOWER) + " - " + std::to_string(MAGE_MANA_COST_UPPER) + "): ").c_str(),
+                               static_cast<int>(MAGE_MANA_COST_LOWER), static_cast<int>(MAGE_MANA_COST_UPPER));
+        int fallbackDamage = readInt(("Nhap fallbackDamage (" + std::to_string(MAGE_FALLBACK_DAMAGE_LOWER) + " - " + std::to_string(MAGE_FALLBACK_DAMAGE_UPPER) + "): ").c_str(),
+                                     static_cast<int>(MAGE_FALLBACK_DAMAGE_LOWER), static_cast<int>(MAGE_FALLBACK_DAMAGE_UPPER));
 
         auto mage = std::make_unique<Mage>(id, name, (unsigned int)maxHp, "MAGE",
             (unsigned int)maxMana, (unsigned int)spellDamage,
@@ -161,22 +167,28 @@ void Menu::doEditCharacter() {
     std::string newName;
     readNonEmptyString("Ten moi (giu nguyen nhap lai ten cu): ", newName);
 
-    int newMaxHp = readInt("maxHp moi (> 0): ", 1, std::numeric_limits<int>::max());
+    int newMaxHp = readInt(("maxHp moi (" + std::to_string(CHARACTER_MAX_HP_LOWER) + " - " + std::to_string(CHARACTER_MAX_HP_UPPER) + "): ").c_str(),
+                              static_cast<int>(CHARACTER_MAX_HP_LOWER), static_cast<int>(CHARACTER_MAX_HP_UPPER));
 
     bool ok = false;
   
     if (ch->getType() == "WARRIOR") {
-        int attackPower = readInt("attackPower moi (> 0): ", 1, std::numeric_limits<int>::max());
+        int attackPower = readInt(("attackPower moi (" + std::to_string(WARRIOR_ATTACK_POWER_LOWER) + " - " + std::to_string(WARRIOR_ATTACK_POWER_UPPER) + "): ").c_str(),
+                              static_cast<int>(WARRIOR_ATTACK_POWER_LOWER), static_cast<int>(WARRIOR_ATTACK_POWER_UPPER));
         ok = m_roster.updateWarrior(id, newName, newMaxHp, attackPower);
 
     }
     else {
-        int maxMana = readInt("maxMana moi (> 0): ", 1, std::numeric_limits<int>::max());
-        int spellDamage = readInt("spellDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
-        int manaCost = readInt("manaCost moi (> 0): ", 1, std::numeric_limits<int>::max());
-        int fallbackDamage = readInt("fallbackDamage moi (> 0): ", 1, std::numeric_limits<int>::max());
+        // Use Mage constants for edit validation as well
+        int maxMana = readInt(("maxMana moi (" + std::to_string(MAGE_MANA_LOWER) + " - " + std::to_string(MAGE_MANA_UPPER) + "): ").c_str(),
+                            static_cast<int>(MAGE_MANA_LOWER), static_cast<int>(MAGE_MANA_UPPER));
+        int spellDamage = readInt(("spellDamage moi (" + std::to_string(MAGE_SPELL_DAMAGE_LOWER) + " - " + std::to_string(MAGE_SPELL_DAMAGE_UPPER) + "): ").c_str(),
+                                static_cast<int>(MAGE_SPELL_DAMAGE_LOWER), static_cast<int>(MAGE_SPELL_DAMAGE_UPPER));
+        int manaCost = readInt(("manaCost moi (" + std::to_string(MAGE_MANA_COST_LOWER) + " - " + std::to_string(MAGE_MANA_COST_UPPER) + "): ").c_str(),
+                            static_cast<int>(MAGE_MANA_COST_LOWER), static_cast<int>(MAGE_MANA_COST_UPPER));
+        int fallbackDamage = readInt(("fallbackDamage moi (" + std::to_string(MAGE_FALLBACK_DAMAGE_LOWER) + " - " + std::to_string(MAGE_FALLBACK_DAMAGE_UPPER) + "): ").c_str(),
+                                    static_cast<int>(MAGE_FALLBACK_DAMAGE_LOWER), static_cast<int>(MAGE_FALLBACK_DAMAGE_UPPER));
         ok = m_roster.updateMage(id, newName, newMaxHp, maxMana, spellDamage, manaCost, fallbackDamage);
-       
     }
 
     if (ok) {
@@ -535,6 +547,7 @@ void Menu::readNonEmptyString(const char* prompt, std::string& out) const {
                 exit(0);
             }
             std::cin.clear();
+            //Bỏ qua tất cả ký tự cho đến khi gặp Enter.
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             continue;
         }
