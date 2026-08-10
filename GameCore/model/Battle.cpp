@@ -1,6 +1,11 @@
 #include "../pch.h"
 #include "Battle.h"
+#include "Warrior.h"
+#include "Mage.h"
+#include "Archer.h"
+#include "Healer.h"
 #include <iostream>
+#include <unordered_set>
 
 
 Battle::Battle()
@@ -29,23 +34,63 @@ bool Battle::setup(const Team* teamA, const Team* teamB, CharacterRoster& roster
     m_sizeA = teamA->getSize();
     for (int i = 0; i < m_sizeA; ++i) {
         int cid = teamA->getCharacterIds()[i];
-        Character* ch = roster.findById(cid);
-        if (ch == nullptr) {
+        Character* src = roster.findById(cid);
+        if (src == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
             --m_sizeA; --i; continue;
         }
-        m_slotsA[i] = ch;
+        // Clone a concrete instance so each team has independent battle state
+        Character* clone = nullptr;
+        if (const Warrior* w = dynamic_cast<const Warrior*>(src)) {
+            clone = new Warrior(w->getId(), w->getName(), w->getMaxHp(), w->getType(), static_cast<int>(w->getAttackPower()));
+        }
+        else if (const Mage* m = dynamic_cast<const Mage*>(src)) {
+            clone = new Mage(m->getId(), m->getName(), m->getMaxHp(), m->getType(), m->getMaxMana(), m->getSpellDamage(), m->getManaCost(), m->getFallbackDamage());
+        }
+        else if (const Archer* a = dynamic_cast<const Archer*>(src)) {
+            clone = new Archer(a->getId(), a->getName(), a->getMaxHp(), a->getType(), static_cast<int>(a->getNormalDamage()), static_cast<int>(a->getCriticalDamage()));
+        }
+        else if (const Healer* h = dynamic_cast<const Healer*>(src)) {
+            clone = new Healer(h->getId(), h->getName(), h->getMaxHp(), h->getHealingPower());
+        }
+        if (clone == nullptr) {
+            std::cout << "[WARN] Loai nhan vat ID=" << cid << " khong ho tro cloning, bo qua.\n";
+            --m_sizeA; --i; continue;
+        }
+        // Preserve current battle state from roster for the clone
+        // Reset will be called before battle start, but copy currentHp/currentMana if any
+        // Use available public methods by resetting then applying differences if needed
+        m_slotsA[i] = clone;
+        m_ownedA[i] = true;
     }
 
     m_sizeB = teamB->getSize();
     for (int i = 0; i < m_sizeB; ++i) {
         int cid = teamB->getCharacterIds()[i];
-        Character* ch = roster.findById(cid);
-        if (ch == nullptr) {
+        Character* src = roster.findById(cid);
+        if (src == nullptr) {
             std::cout << "[WARN] Character ID=" << cid << " khong ton tai trong Roster, bo qua.\n";
             --m_sizeB; --i; continue;
         }
-        m_slotsB[i] = ch;
+        Character* clone = nullptr;
+        if (const Warrior* w = dynamic_cast<const Warrior*>(src)) {
+            clone = new Warrior(w->getId(), w->getName(), w->getMaxHp(), w->getType(), static_cast<int>(w->getAttackPower()));
+        }
+        else if (const Mage* m = dynamic_cast<const Mage*>(src)) {
+            clone = new Mage(m->getId(), m->getName(), m->getMaxHp(), m->getType(), m->getMaxMana(), m->getSpellDamage(), m->getManaCost(), m->getFallbackDamage());
+        }
+        else if (const Archer* a = dynamic_cast<const Archer*>(src)) {
+            clone = new Archer(a->getId(), a->getName(), a->getMaxHp(), a->getType(), static_cast<int>(a->getNormalDamage()), static_cast<int>(a->getCriticalDamage()));
+        }
+        else if (const Healer* h = dynamic_cast<const Healer*>(src)) {
+            clone = new Healer(h->getId(), h->getName(), h->getMaxHp(), h->getHealingPower());
+        }
+        if (clone == nullptr) {
+            std::cout << "[WARN] Loai nhan vat ID=" << cid << " khong ho tro cloning, bo qua.\n";
+            --m_sizeB; --i; continue;
+        }
+        m_slotsB[i] = clone;
+        m_ownedB[i] = true;
     }
 
     if (m_sizeA == 0 || m_sizeB == 0) return false;
@@ -117,6 +162,15 @@ void Battle::reset() {
     m_teamBId     = 0;
     m_teamAName.clear();
     m_teamBName.clear();
+    // free cloned slots
+    for (int i = 0; i < m_sizeA; ++i) {
+        if (m_slotsA[i] && m_ownedA[i]) delete m_slotsA[i];
+        m_slotsA[i] = nullptr; m_ownedA[i] = false;
+    }
+    for (int i = 0; i < m_sizeB; ++i) {
+        if (m_slotsB[i] && m_ownedB[i]) delete m_slotsB[i];
+        m_slotsB[i] = nullptr; m_ownedB[i] = false;
+    }
     m_sizeA       = 0;
     m_sizeB       = 0;
     m_turnNumber  = 0;

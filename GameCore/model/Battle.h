@@ -5,6 +5,7 @@
 #include "Team.h"
 #include "../manager/CharacterRoster.h"
 #include <string>
+#include <array>
 
 enum class BattleState {
     READY,
@@ -78,6 +79,10 @@ private:
     Character* m_slotsB[MAX_TEAM_SIZE];
     int           m_sizeA;
     int           m_sizeB;
+
+    // Ownership flags: true if Battle allocated the Character* and must delete it
+    bool m_ownedA[MAX_TEAM_SIZE];
+    bool m_ownedB[MAX_TEAM_SIZE];
 
     int  m_turnNumber;
     int  m_currentSide;   // 0 = A, 1 = B đang đến lượt
